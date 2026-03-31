@@ -1,0 +1,43 @@
+/* Red template: decorative left stripe (checker / tile pattern) */
+.paper {
+  box-sizing: border-box;
+}
+
+.shell {
+  display: flex;
+  align-items: stretch;
+  max-width: 56rem;
+  margin-left: auto;
+  margin-right: auto;
+  background: #ffffff;
+  box-shadow:
+    0 1px 3px rgb(0 0 0 / 0.08),
+    0 4px 12px rgb(0 0 0 / 0.06);
+}
+
+.leftStripe {
+  flex: 0 0 28px;
+  align-self: stretch;
+  min-height: 100%;
+  background-color: #7f1d1d;
+  /* Checker tiles + faint plus overlay (stacked) */
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' fill-opacity='0.1' d='M5 1h2v4h4v2H7v4H5V7H1V5h4z'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Crect fill='%23991b1b' width='8' height='8'/%3E%3Crect fill='%231a1a1a' x='8' width='8' height='8'/%3E%3Crect fill='%231a1a1a' y='8' width='8' height='8'/%3E%3Crect fill='%23991b1b' x='8' y='8' width='8' height='8'/%3E%3C/svg%3E");
+  background-size: 12px 12px, 16px 16px;
+}
+
+.content {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 2rem 2rem 2rem 1.75rem;
+}
+
+.headerRule {
+  border-top: 1px solid #d4d4d8;
+}
+
+/* Zebra tint — complements Tailwind row classes */
+.rowTint {
+  background-color: rgb(254 242 242 / 0.55);
+}

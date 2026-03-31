@@ -1,0 +1,101 @@
+/* Orange + black template — trapezoids, brand orange ~#F39200, ink #232323 */
+.paper {
+  box-sizing: border-box;
+}
+
+.shell {
+  --fluvo6-ink: #232323;
+  --fluvo6-orange: #f39200;
+  --fluvo6-row: #fdf5e6;
+  max-width: 56rem;
+  margin-left: auto;
+  margin-right: auto;
+  background: #ffffff;
+  box-shadow:
+    0 1px 3px rgb(0 0 0 / 0.08),
+    0 4px 12px rgb(0 0 0 / 0.06);
+}
+
+.headerOuter {
+  position: relative;
+}
+
+.cornerBadge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  width: 7.5rem;
+  height: 4.75rem;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 0.65rem 0.85rem 0 0;
+  background: var(--fluvo6-orange);
+  clip-path: polygon(28% 0, 100% 0, 100% 100%, 0 55%);
+  pointer-events: none;
+}
+
+.cornerBadgeInner {
+  pointer-events: auto;
+}
+
+.headerRow {
+  display: flex;
+  min-height: 5.75rem;
+  align-items: stretch;
+}
+
+.trapBlack {
+  display: flex;
+  align-items: center;
+  background: var(--fluvo6-ink);
+  padding: 1.1rem 2.75rem 1.1rem 1.5rem;
+  clip-path: polygon(0 0, 86% 0, 100% 100%, 0 100%);
+  min-width: min(50%, 17rem);
+}
+
+.metaArea {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.75rem 1.25rem 0.75rem 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .metaArea {
+    align-items: flex-end;
+    padding-right: 6.5rem;
+  }
+}
+
+.headerRule {
+  height: 1px;
+  background: #d4d4d8;
+}
+
+.rowTint {
+  background-color: var(--fluvo6-row);
+}
+
+.footerStrip {
+  display: flex;
+  width: 100%;
+  height: 14px;
+  margin-top: 2rem;
+}
+
+.footerTrapBlack {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: var(--fluvo6-ink);
+  clip-path: polygon(0 0, 100% 0, 93% 100%, 0 100%);
+}
+
+.footerTrapOrange {
+  flex: 0 0 38%;
+  max-width: 13.75rem;
+  background: var(--fluvo6-orange);
+  clip-path: polygon(7% 0, 100% 0, 100% 100%, 0 100%);
+}

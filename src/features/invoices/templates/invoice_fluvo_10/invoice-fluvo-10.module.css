@@ -1,0 +1,24 @@
+/* Orange invoice — #E8502D */
+.paper {
+  box-sizing: border-box;
+}
+
+.shell {
+  max-width: 56rem;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  box-shadow:
+    0 1px 3px rgb(0 0 0 / 0.08),
+    0 4px 12px rgb(0 0 0 / 0.06);
+}
+
+.orange {
+  background-color: #e8502d;
+}
+
+.rowHighlight {
+  background-color: rgb(255 247 237);
+}
