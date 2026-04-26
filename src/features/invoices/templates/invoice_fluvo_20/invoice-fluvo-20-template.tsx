@@ -386,7 +386,7 @@ export function InvoiceFluvo20Template() {
             <div className="flex items-center justify-between gap-4 border-b border-neutral-200 py-2.5">
               <span className="text-neutral-600">Discount</span>
               <span className="inline-flex items-center gap-0.5 tabular-nums text-neutral-900">
-                <span aria-hidden>−৳</span>
+                <span aria-hidden>−$</span>
                 <input
                   className={cn(FIELD_RIGHT, "max-w-26")}
                   value={discount}

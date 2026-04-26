@@ -34,7 +34,7 @@ export function InvoiceFluvo3Totals({
         <div className="flex items-center justify-between gap-6 border-b border-zinc-200 py-2.5">
           <span className="font-bold text-zinc-900">Discount</span>
           <span className="inline-flex items-center gap-0.5 tabular-nums text-zinc-800">
-            <span aria-hidden>−৳</span>
+            <span aria-hidden>−$</span>
             <input
               className={cn(FIELD_RIGHT, "max-w-[6.5rem]")}
               value={discount}

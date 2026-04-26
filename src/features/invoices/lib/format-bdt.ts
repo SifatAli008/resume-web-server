@@ -1,6 +1,6 @@
 export function formatBdt(amount: number): string {
   const n = Number.isFinite(amount) ? amount : 0;
-  return `৳${n.toLocaleString("en-BD", {
+  return `$${n.toLocaleString("en-BD", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;

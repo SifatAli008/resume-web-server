@@ -99,7 +99,7 @@ export function InvoiceFluvo10Table({
                   <td className="px-2 py-3 align-top">
                     <div className="flex items-center justify-end gap-0.5">
                       <span className="text-xs text-zinc-500" aria-hidden>
-                        ৳
+                        $
                       </span>
                       <input
                         className={FIELD_RIGHT}

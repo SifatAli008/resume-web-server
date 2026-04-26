@@ -90,7 +90,7 @@ export function InvoiceFluvo8Table({
                   <td className="border border-zinc-200 px-2 py-2 align-top">
                     <div className="flex items-center justify-end gap-0.5">
                       <span className="text-xs text-zinc-500" aria-hidden>
-                        ৳
+                        $
                       </span>
                       <input
                         className={FIELD_RIGHT}
