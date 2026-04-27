@@ -34,8 +34,10 @@ export default async function InvoiceTemplatePage({ params }: PageProps) {
 
   return (
     <div className="min-h-svh bg-zinc-100 px-4 py-10 text-black print:bg-white print:py-0">
-      <InvoiceTemplateRenderer templateId={templateId} />
-      <DownloadInvoiceButton />
+      <div id="invoice-download-target">
+        <InvoiceTemplateRenderer templateId={templateId} />
+      </div>
+      <DownloadInvoiceButton templateId={templateId} />
     </div>
   );
 }
