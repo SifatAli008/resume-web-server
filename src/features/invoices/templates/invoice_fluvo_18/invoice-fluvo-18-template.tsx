@@ -73,6 +73,18 @@ export function InvoiceFluvo18Template() {
       price: "380.00",
       taxPercent: "10",
     }),
+    newLine({
+      description: "Carpentry Work",
+      qty: "3",
+      price: "100.00",
+      taxPercent: "10",
+    }),
+    newLine({
+      description: "Roof Repair",
+      qty: "2",
+      price: "362.00",
+      taxPercent: "10",
+    }),
   ]);
 
   const [discount, setDiscount] = useState("154.44");
