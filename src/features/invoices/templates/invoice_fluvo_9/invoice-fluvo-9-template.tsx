@@ -2,12 +2,8 @@
 
 import { useEffect, useMemo, useState, type ChangeEvent } from "react";
 import { formatBdt } from "@/features/invoices/lib/format-bdt";
+import { useInvoiceDraft } from "@/features/invoices/hooks/useInvoiceDraft";
 import { InvoiceFluvo9BillingInfo } from "@/features/invoices/templates/invoice_fluvo_9/invoice-fluvo-9-billing-info";
-import {
-  invoiceTaxAmount,
-  invoiceTotal,
-  sumLineAmounts,
-} from "@/features/invoices/templates/invoice_fluvo_9/invoice-fluvo-9-calculations";
 import { InvoiceFluvo9Header } from "@/features/invoices/templates/invoice_fluvo_9/invoice-fluvo-9-header";
 import styles from "@/features/invoices/templates/invoice_fluvo_9/invoice-fluvo-9.module.css";
 import { InvoiceFluvo9Signature } from "@/features/invoices/templates/invoice_fluvo_9/invoice-fluvo-9-signature";
@@ -37,58 +33,103 @@ const PAY_FIELD =
   "min-w-0 border-0 border-b border-transparent bg-transparent py-0.5 text-sm text-black focus:border-black focus:outline-none";
 
 export function InvoiceFluvo9Template() {
-  const [invoiceNumber, setInvoiceNumber] = useState("INV00001");
-  const [invoiceDate, setInvoiceDate] = useState("2026/03/29");
-  const [dueDate, setDueDate] = useState("2026/04/05");
-  const [poNumber, setPoNumber] = useState("PO-2025-1031-AZ");
+  const draft = useInvoiceDraft();
+  const { items = [], company = {}, client = {} } = draft;
 
-  const [fromName, setFromName] = useState("Amy Clark");
-  const [fromAddress, setFromAddress] = useState(
-    "12857 W Main St, Glendale, AZ"
+  const [invoiceNumber, setInvoiceNumber] = useState(
+    () => draft.invoice_number ?? ""
   );
-  const [fromPhone, setFromPhone] = useState("(623) 555-4789");
-  const [fromEmail, setFromEmail] = useState("amy@jacksautorepair.com");
-
-  const [billName, setBillName] = useState("Sunrise Landscaping LLC");
-  const [billAddress, setBillAddress] = useState(
-    "742 Evergreen Industrial Rd."
+  const [invoiceDate, setInvoiceDate] = useState(
+    () => draft.invoice_date ?? ""
   );
-  const [billPhone, setBillPhone] = useState("(602) 555-2934");
-  const [billEmail, setBillEmail] = useState("az@sunriselandscaping.com");
+  const [dueDate, setDueDate] = useState(() => draft.due_date ?? "");
+  const [poNumber, setPoNumber] = useState(() => draft.po_number ?? "");
 
-  const [lines, setLines] = useState<InvoiceFluvo9LineRow[]>([
-    newLine({
-      description: "Plumbing Service",
-      qty: "1",
-      price: "380.00",
-      taxPercent: "10",
-    }),
-    newLine({
-      description: "Carpentry Work",
-      qty: "3",
-      price: "100.00",
-      taxPercent: "10",
-    }),
-    newLine({
-      description: "Roof Repair",
-      qty: "2",
-      price: "362.00",
-      taxPercent: "10",
-    }),
-  ]);
+  const [fromName, setFromName] = useState(() => company.name ?? "");
+  const [fromAddress, setFromAddress] = useState(() =>
+    [company.address, company.address_line2].filter(Boolean).join(", ")
+  );
+  const [fromPhone, setFromPhone] = useState(() => company.phone ?? "");
+  const [fromEmail, setFromEmail] = useState(() => company.email ?? "");
 
-  const [discount, setDiscount] = useState("154.44");
-  const [invoiceTaxPercent, setInvoiceTaxPercent] = useState("5");
+  const [billName, setBillName] = useState(() => client.name ?? "");
+  const [billAddress, setBillAddress] = useState(() =>
+    [client.address, client.address_line2].filter(Boolean).join(", ")
+  );
+  const [billPhone, setBillPhone] = useState(() => client.phone ?? "");
+  const [billEmail, setBillEmail] = useState(() => client.email ?? "");
 
-  const [payHolder, setPayHolder] = useState("Amy Clark");
+  const [lines, setLines] = useState<InvoiceFluvo9LineRow[]>(() =>
+    items.map((item) =>
+      newLine({
+        description: item.description ?? "",
+        qty: String(item.quantity ?? 0),
+        price: String(item.rate ?? 0),
+        taxPercent: String(draft.tax_percent ?? 0),
+      })
+    )
+  );
+
+  const [discount, setDiscount] = useState(() =>
+    String(draft.discount ?? 0)
+  );
+  const [invoiceTaxPercent, setInvoiceTaxPercent] = useState(() =>
+    String(draft.tax_percent ?? 0)
+  );
+
+  const [payHolder, setPayHolder] = useState(() => company.name ?? "");
   const [payCard, setPayCard] = useState("3461546793621567");
   const [payZip, setPayZip] = useState("90026");
 
-  const [terms, setTerms] = useState(
-    "The payment must be received within 7 days. Late payments may incur a 1.5% monthly late fee."
-  );
+  const [terms, setTerms] = useState(() => draft.terms ?? "");
 
   const [signatureUrl, setSignatureUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    queueMicrotask(() => {
+    const it = draft.items ?? [];
+    const co = draft.company ?? {};
+    const cl = draft.client ?? {};
+
+    setInvoiceNumber(draft.invoice_number ?? "");
+    setInvoiceDate(draft.invoice_date ?? "");
+    setDueDate(draft.due_date ?? "");
+    setPoNumber(draft.po_number ?? "");
+
+    setFromName(co.name ?? "");
+    setFromAddress(
+      [co.address, co.address_line2].filter(Boolean).join(", ")
+    );
+    setFromPhone(co.phone ?? "");
+    setFromEmail(co.email ?? "");
+
+    setBillName(cl.name ?? "");
+    setBillAddress(
+      [cl.address, cl.address_line2].filter(Boolean).join(", ")
+    );
+    setBillPhone(cl.phone ?? "");
+    setBillEmail(cl.email ?? "");
+
+    setLines(
+      it.map((item) =>
+        newLine({
+          description: item.description ?? "",
+          qty: String(item.quantity ?? 0),
+          price: String(item.rate ?? 0),
+          taxPercent: String(draft.tax_percent ?? 0),
+        })
+      )
+    );
+
+    setDiscount(String(draft.discount ?? 0));
+    setInvoiceTaxPercent(String(draft.tax_percent ?? 0));
+    setTerms(draft.terms ?? "");
+    setPayHolder(co.name ?? "");
+
+    const sig = draft.signature?.trim();
+    setSignatureUrl(sig ? sig : null);
+    });
+  }, [draft]);
 
   useEffect(() => {
     return () => {
@@ -108,11 +149,24 @@ export function InvoiceFluvo9Template() {
     [lines]
   );
 
-  const subtotal = useMemo(() => sumLineAmounts(numericLines), [numericLines]);
-  const discountNum = parseNum(discount);
-  const taxPctNum = parseNum(invoiceTaxPercent);
-  const taxAmount = invoiceTaxAmount(subtotal, discountNum, taxPctNum);
-  const total = invoiceTotal(subtotal, discountNum, taxPctNum);
+  const subtotal = useMemo(
+    () =>
+      lines.reduce(
+        (s, row) => s + parseNum(row.qty) * parseNum(row.price),
+        0
+      ),
+    [lines]
+  );
+  const discountAmount = parseNum(discount);
+  const taxRate = parseNum(invoiceTaxPercent) / 100;
+  const taxAmount = (subtotal - discountAmount) * taxRate;
+  const total = subtotal - discountAmount + taxAmount;
+
+  const showPaymentDraft =
+    Boolean(draft.payment_method?.trim()) ||
+    Boolean(draft.payment_instructions?.trim());
+  const showTerms = Boolean(terms.trim());
+  const showSignature = Boolean(draft.signature?.trim() || signatureUrl);
 
   function updateLine(
     id: string,
@@ -202,56 +256,77 @@ export function InvoiceFluvo9Template() {
               </p>
             </div>
 
-            <InvoiceFluvo9Signature
-              imageUrl={signatureUrl}
-              onImageUrlChange={setSignatureUrl}
-            />
+            {showSignature ? (
+              <InvoiceFluvo9Signature
+                imageUrl={signatureUrl}
+                onImageUrlChange={setSignatureUrl}
+              />
+            ) : null}
           </div>
 
           <section className="mt-14 grid gap-10 border-t border-neutral-300 pt-10 sm:grid-cols-2">
             <div className="space-y-3 text-sm">
-              <p className="font-bold text-black">Payment Method</p>
-              <p className="text-neutral-800">
-                <span className="font-semibold text-black">Holder Name</span>{" "}
-                <input
-                  className={cn(PAY_FIELD, "inline-block min-w-32")}
-                  value={payHolder}
-                  onChange={(e) => setPayHolder(e.target.value)}
-                  aria-label="Card holder name"
-                />
-              </p>
-              <p className="text-neutral-800">
-                <span className="font-semibold text-black">Card Number</span>{" "}
-                <input
-                  className={cn(
-                    PAY_FIELD,
-                    "inline-block min-w-40 font-mono tracking-wide"
-                  )}
-                  value={payCard}
-                  onChange={(e) => setPayCard(e.target.value)}
-                  aria-label="Card number"
-                />
-              </p>
-              <p className="text-neutral-800">
-                <span className="font-semibold text-black">ZIP Code</span>{" "}
-                <input
-                  className={cn(PAY_FIELD, "inline-block w-24")}
-                  value={payZip}
-                  onChange={(e) => setPayZip(e.target.value)}
-                  aria-label="ZIP code"
-                />
-              </p>
+              {draft.payment_method?.trim() ? (
+                <>
+                  <p className="font-bold text-black">Payment Method</p>
+                  <p className="text-neutral-800">{draft.payment_method}</p>
+                </>
+              ) : null}
+              {draft.payment_instructions?.trim() ? (
+                <p className="text-neutral-800 whitespace-pre-wrap">
+                  {draft.payment_instructions}
+                </p>
+              ) : null}
+              {!showPaymentDraft ? (
+                <>
+                  <p className="font-bold text-black">Payment Method</p>
+                  <p className="text-neutral-800">
+                    <span className="font-semibold text-black">
+                      Holder Name
+                    </span>{" "}
+                    <input
+                      className={cn(PAY_FIELD, "inline-block min-w-32")}
+                      value={payHolder}
+                      onChange={(e) => setPayHolder(e.target.value)}
+                      aria-label="Card holder name"
+                    />
+                  </p>
+                  <p className="text-neutral-800">
+                    <span className="font-semibold text-black">Card Number</span>{" "}
+                    <input
+                      className={cn(
+                        PAY_FIELD,
+                        "inline-block min-w-40 font-mono tracking-wide"
+                      )}
+                      value={payCard}
+                      onChange={(e) => setPayCard(e.target.value)}
+                      aria-label="Card number"
+                    />
+                  </p>
+                  <p className="text-neutral-800">
+                    <span className="font-semibold text-black">ZIP Code</span>{" "}
+                    <input
+                      className={cn(PAY_FIELD, "inline-block w-24")}
+                      value={payZip}
+                      onChange={(e) => setPayZip(e.target.value)}
+                      aria-label="ZIP code"
+                    />
+                  </p>
+                </>
+              ) : null}
             </div>
 
-            <div className="text-sm">
-              <p className="font-bold text-black">Terms &amp; Conditions</p>
-              <textarea
-                className="mt-2 min-h-24 w-full resize-y border-0 bg-transparent text-xs leading-relaxed text-neutral-700 focus:outline-none focus:ring-2 focus:ring-black/20 rounded-sm"
-                value={terms}
-                onChange={(e) => setTerms(e.target.value)}
-                aria-label="Terms and conditions"
-              />
-            </div>
+            {showTerms ? (
+              <div className="text-sm">
+                <p className="font-bold text-black">Terms &amp; Conditions</p>
+                <textarea
+                  className="mt-2 min-h-24 w-full resize-y border-0 bg-transparent text-xs leading-relaxed text-neutral-700 focus:outline-none focus:ring-2 focus:ring-black/20 rounded-sm"
+                  value={terms}
+                  onChange={(e) => setTerms(e.target.value)}
+                  aria-label="Terms and conditions"
+                />
+              </div>
+            ) : null}
           </section>
         </div>
       </div>

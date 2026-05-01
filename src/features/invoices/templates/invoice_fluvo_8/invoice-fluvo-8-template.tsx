@@ -1,12 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ChangeEvent } from "react";
+import { useInvoiceDraft } from "@/features/invoices/hooks/useInvoiceDraft";
 import { InvoiceFluvo8BillingInfo } from "@/features/invoices/templates/invoice_fluvo_8/invoice-fluvo-8-billing-info";
-import {
-  invoiceTaxAmount,
-  invoiceTotal,
-  sumLineAmounts,
-} from "@/features/invoices/templates/invoice_fluvo_8/invoice-fluvo-8-calculations";
 import { InvoiceFluvo8CornerDecor } from "@/features/invoices/templates/invoice_fluvo_8/invoice-fluvo-8-corner-decor";
 import { InvoiceFluvo8Header } from "@/features/invoices/templates/invoice_fluvo_8/invoice-fluvo-8-header";
 import styles from "@/features/invoices/templates/invoice_fluvo_8/invoice-fluvo-8.module.css";
@@ -39,58 +35,103 @@ const PAY_FIELD =
 const PURPLE = "#6b6ba3";
 
 export function InvoiceFluvo8Template() {
-  const [invoiceNumber, setInvoiceNumber] = useState("");
-  const [invoiceDate, setInvoiceDate] = useState("27/03/2026");
-  const [dueDate, setDueDate] = useState("03/04/2026");
-  const [poNumber, setPoNumber] = useState("PO-2025-1031-AZ");
+  const draft = useInvoiceDraft();
+  const { items = [], company = {}, client = {} } = draft;
 
-  const [fromName, setFromName] = useState("Amy Clark");
-  const [fromAddress, setFromAddress] = useState(
-    "12857 W Main St, Glendale, AZ"
+  const [invoiceNumber, setInvoiceNumber] = useState(
+    () => draft.invoice_number ?? ""
   );
-  const [fromPhone, setFromPhone] = useState("(623) 555-4789");
-  const [fromEmail, setFromEmail] = useState("amy@jacksautorepair.com");
-
-  const [billName, setBillName] = useState("Sunrise Landscaping LLC");
-  const [billAddress, setBillAddress] = useState(
-    "742 Evergreen Industrial Rd."
+  const [invoiceDate, setInvoiceDate] = useState(
+    () => draft.invoice_date ?? ""
   );
-  const [billPhone, setBillPhone] = useState("(602) 555-2934");
-  const [billEmail, setBillEmail] = useState("az@sunriselandscaping.com");
+  const [dueDate, setDueDate] = useState(() => draft.due_date ?? "");
+  const [poNumber, setPoNumber] = useState(() => draft.po_number ?? "");
 
-  const [lines, setLines] = useState<InvoiceFluvo8LineRow[]>([
-    newLine({
-      description: "Plumbing Service",
-      qty: "1",
-      price: "380.00",
-      taxPercent: "10",
-    }),
-    newLine({
-      description: "Carpentry Work",
-      qty: "3",
-      price: "100.00",
-      taxPercent: "10",
-    }),
-    newLine({
-      description: "Roof Repair",
-      qty: "2",
-      price: "362.00",
-      taxPercent: "10",
-    }),
-  ]);
+  const [fromName, setFromName] = useState(() => company.name ?? "");
+  const [fromAddress, setFromAddress] = useState(() =>
+    [company.address, company.address_line2].filter(Boolean).join(", ")
+  );
+  const [fromPhone, setFromPhone] = useState(() => company.phone ?? "");
+  const [fromEmail, setFromEmail] = useState(() => company.email ?? "");
 
-  const [discount, setDiscount] = useState("154.44");
-  const [invoiceTaxPercent, setInvoiceTaxPercent] = useState("5");
+  const [billName, setBillName] = useState(() => client.name ?? "");
+  const [billAddress, setBillAddress] = useState(() =>
+    [client.address, client.address_line2].filter(Boolean).join(", ")
+  );
+  const [billPhone, setBillPhone] = useState(() => client.phone ?? "");
+  const [billEmail, setBillEmail] = useState(() => client.email ?? "");
 
-  const [payHolder, setPayHolder] = useState("Amy Clark");
+  const [lines, setLines] = useState<InvoiceFluvo8LineRow[]>(() =>
+    items.map((item) =>
+      newLine({
+        description: item.description ?? "",
+        qty: String(item.quantity ?? 0),
+        price: String(item.rate ?? 0),
+        taxPercent: String(draft.tax_percent ?? 0),
+      })
+    )
+  );
+
+  const [discount, setDiscount] = useState(() =>
+    String(draft.discount ?? 0)
+  );
+  const [invoiceTaxPercent, setInvoiceTaxPercent] = useState(() =>
+    String(draft.tax_percent ?? 0)
+  );
+
+  const [payHolder, setPayHolder] = useState(() => company.name ?? "");
   const [payCard, setPayCard] = useState("3461546793621567");
   const [payZip, setPayZip] = useState("90026");
 
-  const [terms, setTerms] = useState(
-    "The payment must be received within 7 days. Late payments may incur a 1.5% monthly late fee."
-  );
+  const [terms, setTerms] = useState(() => draft.terms ?? "");
 
   const [signatureUrl, setSignatureUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    queueMicrotask(() => {
+    const it = draft.items ?? [];
+    const co = draft.company ?? {};
+    const cl = draft.client ?? {};
+
+    setInvoiceNumber(draft.invoice_number ?? "");
+    setInvoiceDate(draft.invoice_date ?? "");
+    setDueDate(draft.due_date ?? "");
+    setPoNumber(draft.po_number ?? "");
+
+    setFromName(co.name ?? "");
+    setFromAddress(
+      [co.address, co.address_line2].filter(Boolean).join(", ")
+    );
+    setFromPhone(co.phone ?? "");
+    setFromEmail(co.email ?? "");
+
+    setBillName(cl.name ?? "");
+    setBillAddress(
+      [cl.address, cl.address_line2].filter(Boolean).join(", ")
+    );
+    setBillPhone(cl.phone ?? "");
+    setBillEmail(cl.email ?? "");
+
+    setLines(
+      it.map((item) =>
+        newLine({
+          description: item.description ?? "",
+          qty: String(item.quantity ?? 0),
+          price: String(item.rate ?? 0),
+          taxPercent: String(draft.tax_percent ?? 0),
+        })
+      )
+    );
+
+    setDiscount(String(draft.discount ?? 0));
+    setInvoiceTaxPercent(String(draft.tax_percent ?? 0));
+    setTerms(draft.terms ?? "");
+    setPayHolder(co.name ?? "");
+
+    const sig = draft.signature?.trim();
+    setSignatureUrl(sig ? sig : null);
+    });
+  }, [draft]);
 
   useEffect(() => {
     return () => {
@@ -110,11 +151,24 @@ export function InvoiceFluvo8Template() {
     [lines]
   );
 
-  const subtotal = useMemo(() => sumLineAmounts(numericLines), [numericLines]);
-  const discountNum = parseNum(discount);
-  const taxPctNum = parseNum(invoiceTaxPercent);
-  const taxAmount = invoiceTaxAmount(subtotal, discountNum, taxPctNum);
-  const total = invoiceTotal(subtotal, discountNum, taxPctNum);
+  const subtotal = useMemo(
+    () =>
+      lines.reduce(
+        (s, row) => s + parseNum(row.qty) * parseNum(row.price),
+        0
+      ),
+    [lines]
+  );
+  const discountAmount = parseNum(discount);
+  const taxRate = parseNum(invoiceTaxPercent) / 100;
+  const taxAmount = (subtotal - discountAmount) * taxRate;
+  const total = subtotal - discountAmount + taxAmount;
+
+  const showPaymentDraft =
+    Boolean(draft.payment_method?.trim()) ||
+    Boolean(draft.payment_instructions?.trim());
+  const showTerms = Boolean(terms.trim());
+  const showSignature = Boolean(draft.signature?.trim() || signatureUrl);
 
   function updateLine(
     id: string,
@@ -206,66 +260,87 @@ export function InvoiceFluvo8Template() {
           <section className="mt-16 grid gap-14 lg:grid-cols-2 lg:items-start">
             <div className="flex flex-col gap-12">
               <div className="space-y-3 text-sm">
-                <p className="font-bold" style={{ color: PURPLE }}>
-                  Payment Method
-                </p>
-                <p className="text-zinc-700">
-                  <span className="font-semibold text-zinc-900">
-                    Holder Name:
-                  </span>{" "}
-                  <input
-                    className={cn(PAY_FIELD, "inline-block min-w-[8rem]")}
-                    value={payHolder}
-                    onChange={(e) => setPayHolder(e.target.value)}
-                    aria-label="Card holder name"
-                  />
-                </p>
-                <p className="text-zinc-700">
-                  <span className="font-semibold text-zinc-900">
-                    Card Number:
-                  </span>{" "}
-                  <input
-                    className={cn(
-                      PAY_FIELD,
-                      "inline-block min-w-[10rem] font-mono tracking-wide"
-                    )}
-                    value={payCard}
-                    onChange={(e) => setPayCard(e.target.value)}
-                    aria-label="Card number"
-                  />
-                </p>
-                <p className="text-zinc-700">
-                  <span className="font-semibold text-zinc-900">
-                    ZIP Code:
-                  </span>{" "}
-                  <input
-                    className={cn(PAY_FIELD, "inline-block w-24")}
-                    value={payZip}
-                    onChange={(e) => setPayZip(e.target.value)}
-                    aria-label="ZIP code"
-                  />
-                </p>
+                {draft.payment_method?.trim() ? (
+                  <>
+                    <p className="font-bold" style={{ color: PURPLE }}>
+                      Payment Method
+                    </p>
+                    <p className="text-zinc-700">{draft.payment_method}</p>
+                  </>
+                ) : null}
+                {draft.payment_instructions?.trim() ? (
+                  <p className="text-zinc-700 whitespace-pre-wrap">
+                    {draft.payment_instructions}
+                  </p>
+                ) : null}
+                {!showPaymentDraft ? (
+                  <>
+                    <p className="font-bold" style={{ color: PURPLE }}>
+                      Payment Method
+                    </p>
+                    <p className="text-zinc-700">
+                      <span className="font-semibold text-zinc-900">
+                        Holder Name:
+                      </span>{" "}
+                      <input
+                        className={cn(PAY_FIELD, "inline-block min-w-[8rem]")}
+                        value={payHolder}
+                        onChange={(e) => setPayHolder(e.target.value)}
+                        aria-label="Card holder name"
+                      />
+                    </p>
+                    <p className="text-zinc-700">
+                      <span className="font-semibold text-zinc-900">
+                        Card Number:
+                      </span>{" "}
+                      <input
+                        className={cn(
+                          PAY_FIELD,
+                          "inline-block min-w-[10rem] font-mono tracking-wide"
+                        )}
+                        value={payCard}
+                        onChange={(e) => setPayCard(e.target.value)}
+                        aria-label="Card number"
+                      />
+                    </p>
+                    <p className="text-zinc-700">
+                      <span className="font-semibold text-zinc-900">
+                        ZIP Code:
+                      </span>{" "}
+                      <input
+                        className={cn(PAY_FIELD, "inline-block w-24")}
+                        value={payZip}
+                        onChange={(e) => setPayZip(e.target.value)}
+                        aria-label="ZIP code"
+                      />
+                    </p>
+                  </>
+                ) : null}
               </div>
 
-              <footer className="border-t border-zinc-200 pt-8 text-sm">
-                <p className="font-bold" style={{ color: PURPLE }}>
-                  Terms &amp; Conditions
-                </p>
-                <textarea
-                  className="mt-2 min-h-[4.5rem] w-full resize-y border-0 bg-transparent text-xs leading-relaxed text-zinc-600 focus:outline-none focus:ring-2 focus:ring-[#6b6ba3]/30 rounded-sm"
-                  value={terms}
-                  onChange={(e) => setTerms(e.target.value)}
-                  aria-label="Terms and conditions"
-                />
-              </footer>
+              {showTerms ? (
+                <footer className="border-t border-zinc-200 pt-8 text-sm">
+                  <p className="font-bold" style={{ color: PURPLE }}>
+                    Terms &amp; Conditions
+                  </p>
+                  <textarea
+                    className="mt-2 min-h-[4.5rem] w-full resize-y border-0 bg-transparent text-xs leading-relaxed text-zinc-600 focus:outline-none focus:ring-2 focus:ring-[#6b6ba3]/30 rounded-sm"
+                    value={terms}
+                    onChange={(e) => setTerms(e.target.value)}
+                    aria-label="Terms and conditions"
+                  />
+                </footer>
+              ) : null}
             </div>
 
-            <div className="relative z-2">
-              <InvoiceFluvo8Signature
-                imageUrl={signatureUrl}
-                onImageUrlChange={setSignatureUrl}
-              />
-            </div>
+            {showSignature ? (
+              <div className="relative z-2">
+                <InvoiceFluvo8Signature
+                  imageUrl={signatureUrl}
+                  onImageUrlChange={setSignatureUrl}
+                />
+              </div>
+            ) : null}
           </section>
         </div>
       </div>
