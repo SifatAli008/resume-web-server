@@ -1,6 +1,6 @@
 {
   "framework": null,
-  "buildCommand": "",
+  "buildCommand": "npm install && npm run build:print",
   "outputDirectory": "vanilla",
   "rewrites": [
     {

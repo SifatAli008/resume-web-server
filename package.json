@@ -5,6 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "node vanilla/server.js",
-    "start": "node vanilla/server.js"
+    "start": "node vanilla/server.js",
+    "build:print": "esbuild vanilla/app/main.js --bundle --format=iife --platform=browser --outfile=vanilla/app/main.print.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
   }
 }
