@@ -1,0 +1,15 @@
+{
+  "framework": null,
+  "buildCommand": "",
+  "outputDirectory": "vanilla",
+  "rewrites": [
+    {
+      "source": "/invoice/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/",
+      "destination": "/index.html"
+    }
+  ]
+}
