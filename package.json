@@ -6,9 +6,13 @@
   "scripts": {
     "dev": "node vanilla/server.js",
     "start": "node vanilla/server.js",
-    "build:print": "esbuild vanilla/app/main.js --bundle --format=iife --platform=browser --outfile=vanilla/app/main.print.js"
+    "build:print": "esbuild vanilla/app/main.js --bundle --format=iife --platform=browser --outfile=vanilla/app/main.print.js",
+    "build:css": "npx @tailwindcss/cli -i ./vanilla/app/tailwind.input.css -o ./vanilla/app/tailwind.generated.css --minify",
+    "build": "npm run build:print && npm run build:css"
   },
   "devDependencies": {
-    "esbuild": "^0.25.0"
+    "@tailwindcss/cli": "^4.1.6",
+    "esbuild": "^0.25.0",
+    "tailwindcss": "^4.1.6"
   }
 }

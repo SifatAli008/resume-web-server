@@ -1,0 +1,35 @@
+{
+  "template_id": "invoice_fluvo_1",
+  "invoice_number": "INV-0001",
+  "invoice_date": "2026-05-08",
+  "due_date": "2026-05-22",
+  "po_number": "PO-001",
+  "company": {
+    "name": "FluvoSoft LLC",
+    "address": "221B Green Road",
+    "address_line2": "Dhaka 1212",
+    "email": "billing@fluvosoft.com",
+    "phone": "+8801712345678"
+  },
+  "client": {
+    "name": "Acme Industries",
+    "address": "12 Client Avenue",
+    "address_line2": "Chattogram",
+    "email": "accounts@acme.com",
+    "phone": "+8801812345678"
+  },
+  "currency": "USD",
+  "discount": 0,
+  "tax_percent": 10,
+  "payment_instructions": "Bank transfer within 7 days.",
+  "terms": "Thank you for your business.",
+  "signature": "Finance Team",
+  "items": [
+    {
+      "description": "Design retainer",
+      "quantity": 1,
+      "rate": 1200,
+      "tax_percent": 10
+    }
+  ]
+}

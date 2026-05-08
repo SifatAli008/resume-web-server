@@ -1,0 +1,103 @@
+@font-face {
+  font-family: "Invoice Sans";
+  src: url("/app/fonts/Inter-Regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Invoice Sans";
+  src: url("/app/fonts/Inter-SemiBold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: block;
+}
+
+:root {
+  --invoice-font: "Invoice Sans", sans-serif;
+}
+
+html,
+body {
+  font-family: var(--invoice-font);
+  background: #ffffff;
+  color: #18181b;
+}
+
+@page {
+  size: A4;
+  margin: 10mm 10mm 12mm 10mm;
+}
+
+@media print {
+  html,
+  body {
+    background: #ffffff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .invoice-root {
+    box-shadow: none !important;
+    margin: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+.invoice-safe-text {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.invoice-safe-cell {
+  max-width: 220px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  vertical-align: top;
+}
+
+.invoice-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.invoice-table thead {
+  display: table-header-group;
+}
+
+.invoice-table tr,
+.invoice-table td,
+.invoice-table th {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.invoice-section {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.invoice-totals {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.invoice-footer {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.invoice-logo,
+.invoice-signature-image {
+  max-height: 72px;
+  max-width: 240px;
+  object-fit: contain;
+  display: block;
+}
