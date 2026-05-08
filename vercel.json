@@ -1,8 +1,12 @@
 {
   "framework": null,
-  "buildCommand": "npm install && npm run build:print",
+  "buildCommand": "npm install && npm run build",
   "outputDirectory": "vanilla",
   "rewrites": [
+    {
+      "source": "/render/invoice/:templateId/static",
+      "destination": "/api/render-invoice-static?templateId=:templateId"
+    },
     {
       "source": "/invoice/:path*",
       "destination": "/index.html"
