@@ -1,44 +1,32 @@
 # Resume Web Server
 
-A modern web application for creating, editing, and exporting professional resumes.
+Local-first **resume builder**: draft in the browser and export with your system print dialog (Save as PDF).
+
+## What runs by default
+
+The app you start with `npm run dev` is the **vanilla** single-page app under `vanilla/`, not the experimental `src/` tree (that folder is not wired in this package’s scripts).
 
 ## Features
 
-- **Resume Builder**: Create and edit professional resumes with multiple templates
-- **Invoice System**: Built-in invoice generation and management
-- **Authentication**: Google Sign-in and user account management
-- **Export to PDF**: Download your resume as a PDF file
-- **Multiple Templates**: Choose from various professionally designed resume templates
+- **Resume builder** (`/resume`): **20 industry-style templates** (`resume_fluvo_1`–`20`): ruled section headers, date-aligned experience/education grids, skill **tags** and **proficiency bars** (from skills text, one entry per line), dark sidebars, gold split columns, green band headers, black contact banner layouts, and formal serif options. See `vanilla/features/resume/templates/resume-professional-parts.js`. Toolbar or `/resume?template=resume_fluvo_N`. Legacy ids still migrate. **Print → Save as PDF**.
 
-## Tech Stack
+## Tech stack
 
-- **Framework**: Next.js with TypeScript
-- **Styling**: Tailwind CSS
-- **Authentication**: Google OAuth
+- Node HTTP static server: `vanilla/server.js`
+- UI: vanilla ES modules + Tailwind CSS v4 (CLI build)
 
-## Getting Started
+## Getting started
 
-### Installation
+1. Install dependencies: `npm install`
+2. Build CSS (required after class changes in new files): `npm run build:css`
+3. Start the server: `npm run dev`
+4. Open [http://localhost:3000](http://localhost:3000) — use **Resume builder** or open `/resume` directly.
 
-1. Clone the repository
-2. Install dependencies: 
-pm install
-3. Run development server: 
-pm run dev
-4. Open http://localhost:3000
+## Scripts
 
-## Available Scripts
-
-- 
-pm run dev - Start development server
-- 
-pm run build - Build for production
-- 
-pm start - Start production server
-
-## Contributing
-
-Contributions are welcome!
+- `npm run dev` / `npm start` — run `vanilla/server.js` (default port `3000`, override with `PORT`).
+- `npm run build` — compile Tailwind (`vanilla/app/tailwind.input.css` → `vanilla/app/tailwind.generated.css`).
+- `npm run build:css` — same as the Tailwind step in `build`.
 
 ## License
 

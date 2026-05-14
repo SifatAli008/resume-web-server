@@ -1,8 +1,0 @@
-/* Teal invoice — table grid and dividers beyond Tailwind utilities */
-.paper {
-  box-sizing: border-box;
-}
-
-.headerRule {
-  border-top: 1px solid #e4e4e7;
-}

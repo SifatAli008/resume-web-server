@@ -1,32 +1,42 @@
-import { INVOICE_TEMPLATE_IDS, isKnownInvoiceTemplateId } from "../features/invoices/constants.js";
-import { renderInvoiceTemplate } from "../features/invoices/invoice-template-renderer.js";
+import { mountResumeApp } from "../features/resume/render-resume-app.js";
 
-function resolveTemplateId() {
-  const params = new URLSearchParams(window.location.search);
-  const fromQuery = params.get("templateId");
-  if (fromQuery && isKnownInvoiceTemplateId(fromQuery)) return fromQuery;
+function routeKind() {
+  const path = window.location.pathname.replace(/\/$/, "") || "/";
+  if (path === "/resume" || path.startsWith("/resume/")) return "resume";
+  return "home";
+}
 
-  const parts = window.location.pathname.split("/").filter(Boolean);
-  const idx = parts.findIndex((p) => p === "invoice");
-  const fromPath = idx >= 0 ? parts[idx + 1] : null;
-  if (fromPath && isKnownInvoiceTemplateId(fromPath)) return fromPath;
-
-  return INVOICE_TEMPLATE_IDS.FLUVO_4;
+function renderHome(app) {
+  document.title = "Resume Web Server";
+  app.innerHTML = `
+    <div class="mx-auto max-w-lg rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
+      <h1 class="text-2xl font-bold tracking-tight text-zinc-900">Resume Web Server</h1>
+      <p class="mt-2 text-sm leading-relaxed text-zinc-600">
+        Build a resume in the browser, keep a local draft, and export with your system print dialog (Save as PDF).
+      </p>
+      <ul class="mt-8 space-y-3">
+        <li>
+          <a class="block rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm font-semibold text-zinc-900 hover:bg-zinc-100" href="/resume">Resume builder →</a>
+        </li>
+      </ul>
+    </div>
+  `;
 }
 
 function render() {
   const app = document.getElementById("app");
   if (!app) return;
 
-  const templateId = resolveTemplateId();
-  app.innerHTML = `
-    <div id="invoice-download-target"></div>
-  `;
+  const kind = routeKind();
+  app.replaceChildren();
 
-  const target = document.getElementById("invoice-download-target");
-  if (!target) return;
+  if (kind === "home") {
+    renderHome(app);
+    return;
+  }
 
-  renderInvoiceTemplate(target, templateId);
+  document.title = "Resume builder · Resume Web Server";
+  mountResumeApp(app);
 }
 
 render();

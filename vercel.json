@@ -4,11 +4,11 @@
   "outputDirectory": "vanilla",
   "rewrites": [
     {
-      "source": "/render/invoice/:templateId/static",
-      "destination": "/api/render-invoice-static?templateId=:templateId"
+      "source": "/resume",
+      "destination": "/index.html"
     },
     {
-      "source": "/invoice/:path*",
+      "source": "/resume/:path*",
       "destination": "/index.html"
     },
     {
