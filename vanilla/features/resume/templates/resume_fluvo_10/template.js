@@ -1,5 +1,5 @@
-import { renderResumeFluvoThemed } from "../shared-resume-fluvo.js";
+﻿import { renderCvTemplate } from "../cv-multipage-core.js";
 
 export function renderResumeFluvo10Template(draft) {
-  return renderResumeFluvoThemed(draft, 10);
+  return renderCvTemplate(draft, 10);
 }

@@ -17,20 +17,30 @@ export function skillLinesFromDraft(draft) {
     .slice(0, 14);
 }
 
-export function sectionHeader(title, titleClass, lineClass = "bg-zinc-300") {
+export function sectionHeader(title, titleClass, lineClass = "bg-zinc-200") {
   return `
-    <div class="mb-3 flex min-w-0 items-center gap-3">
-      <h2 class="shrink-0 text-[10px] font-bold uppercase tracking-[0.18em] ${titleClass}">${escapeHtml(title)}</h2>
-      <div class="h-px min-w-0 flex-1 ${lineClass}"></div>
+    <div class="mb-3.5 flex min-w-0 items-center gap-3">
+      <h2 class="shrink-0 text-[11px] font-semibold uppercase tracking-[0.14em] ${titleClass}">${escapeHtml(title)}</h2>
+      <div class="h-px min-w-0 flex-1 ${lineClass}" aria-hidden="true"></div>
     </div>`;
+}
+
+/** Plain-text skill groups (ATS-friendly; preserves line breaks from draft). */
+export function skillsAtsHtml(draft, lineClass = "text-[13px] leading-[1.55] text-zinc-700") {
+  const groups = String(draft.skills || "")
+    .split(/\n/)
+    .map((g) => g.trim())
+    .filter(Boolean);
+  if (!groups.length) return "";
+  return `<div class="space-y-1.5">${groups.map((g) => `<p class="${lineClass}">${escapeHtml(g)}</p>`).join("")}</div>`;
 }
 
 export function experienceHtmlDatesLeft(draft, opts = {}) {
   const {
-    dateClass = "text-xs font-semibold tabular-nums text-zinc-500",
-    roleClass = "font-bold text-zinc-900",
-    companyClass = "text-sm italic text-zinc-600",
-    bulletClass = "text-sm text-zinc-700 leading-relaxed",
+    dateClass = "pt-0.5 text-xs font-medium tabular-nums leading-snug text-zinc-500",
+    roleClass = "text-[15px] font-semibold leading-snug text-zinc-950",
+    companyClass = "mt-0.5 text-[13px] text-zinc-600",
+    bulletClass = "text-[13px] leading-[1.55] text-zinc-700",
   } = opts;
   return (draft.experience || [])
     .map((job) => {
@@ -44,23 +54,23 @@ export function experienceHtmlDatesLeft(draft, opts = {}) {
         .join("");
       if (!company && !role && !bullets) return "";
       return `
-        <div class="mb-5 grid grid-cols-[6.5rem_minmax(0,1fr)] gap-x-4 border-b border-zinc-100 pb-5 last:border-0">
-          <div class="${dateClass}">${range || "—"}</div>
+        <article class="mb-5 grid grid-cols-[7rem_minmax(0,1fr)] gap-x-5 border-b border-zinc-100/90 pb-5 last:mb-0 last:border-0 last:pb-0">
+          <time class="${dateClass}">${range || "—"}</time>
           <div class="min-w-0">
-            <p class="${roleClass}">${escapeHtml(role || "Job title")}</p>
+            <h3 class="${roleClass}">${escapeHtml(role || "Job title")}</h3>
             <p class="${companyClass}">${escapeHtml(company || "Company")}</p>
-            ${bullets ? `<ul class="mt-2 list-disc space-y-1 pl-4 marker:text-zinc-400">${bullets}</ul>` : ""}
+            ${bullets ? `<ul class="mt-2.5 list-disc space-y-1.5 pl-[1.15rem] marker:text-zinc-400">${bullets}</ul>` : ""}
           </div>
-        </div>`;
+        </article>`;
     })
     .join("");
 }
 
 export function educationHtml(draft, opts = {}) {
   const {
-    degreeClass = "font-bold text-zinc-900",
-    metaClass = "text-sm text-zinc-600",
-    dateClass = "text-xs font-semibold text-zinc-500",
+    degreeClass = "text-[15px] font-semibold leading-snug text-zinc-950",
+    metaClass = "mt-0.5 text-[13px] text-zinc-600",
+    dateClass = "pt-0.5 text-xs font-medium tabular-nums leading-snug text-zinc-500",
   } = opts;
   return (draft.education || [])
     .map((ed) => {
@@ -69,8 +79,8 @@ export function educationHtml(draft, opts = {}) {
       const range = dateRange(ed.start, ed.end);
       if (!school && !degree) return "";
       return `
-        <div class="mb-4 grid grid-cols-[6.5rem_minmax(0,1fr)] gap-x-4">
-          <div class="${dateClass}">${range || "—"}</div>
+        <div class="mb-4 grid grid-cols-[7rem_minmax(0,1fr)] gap-x-5 last:mb-0">
+          <time class="${dateClass}">${range || "—"}</time>
           <div class="min-w-0">
             <p class="${degreeClass}">${escapeHtml(degree || "Degree")}</p>
             <p class="${metaClass}">${escapeHtml(school || "Institution")}</p>
@@ -133,35 +143,31 @@ function linkPack(a) {
   return { anchor: a.anchor, muted: a.muted, sep: `${a.sep} select-none px-1` };
 }
 
-/** Single-column executive layout. */
+/** Single-column executive layout — ATS-friendly, recruiter scan order. */
 export function renderLayoutClassicPro(draft, accent = "blue") {
   const a = ACCENTS[accentKeyOr(accent)];
   const links = buildLinksHtml(draft, linkPack(a));
   const bits = contactBits(draft);
   const skills = String(draft.skills || "").trim();
   const summary = String(draft.summary || "").trim();
-  const lines = skillLinesFromDraft(draft);
   const exp = experienceHtmlDatesLeft(draft);
   const edu = educationHtml(draft);
+  const contactHtml = bits.length
+    ? bits.map((c) => `<span>${escapeHtml(c)}</span>`).join(`<span class="text-zinc-300 select-none" aria-hidden="true">·</span>`)
+    : `<span class="text-zinc-400">Add contact details</span>`;
 
   return `
-    <article id="resume-print-root" class="resume-preview-article mx-auto max-w-3xl text-left text-zinc-900 antialiased">
-      <header class="border-b-2 border-zinc-900 pb-5 mb-6">
-        <h1 class="text-3xl font-bold tracking-tight text-zinc-950 sm:text-4xl">${escapeHtml(draft.fullName || "Your name")}</h1>
-        <p class="mt-1 text-sm font-semibold uppercase tracking-wide text-zinc-600">${escapeHtml(draft.title || "Professional title")}</p>
-        <div class="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm text-zinc-700">
-          ${bits.length ? bits.map((c) => `<span>${escapeHtml(c)}</span>`).join(`<span class="text-zinc-300">|</span>`) : `<span class="text-zinc-400">Add contact details</span>`}
-        </div>
-        ${links ? `<div class="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm">${links}</div>` : ""}
+    <article id="resume-print-root" class="resume-preview-article mx-auto max-w-[52rem] text-left text-zinc-900 antialiased">
+      <header class="mb-8 border-b border-zinc-200 pb-6">
+        <h1 class="text-[1.75rem] font-bold leading-tight tracking-tight text-zinc-950 sm:text-[2rem]">${escapeHtml(draft.fullName || "Your name")}</h1>
+        <p class="mt-1.5 text-[15px] font-medium text-zinc-600">${escapeHtml(draft.title || "Professional title")}</p>
+        <p class="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-zinc-700">${contactHtml}</p>
+        ${links ? `<p class="mt-2 flex flex-wrap gap-x-1 text-[13px]">${links}</p>` : ""}
       </header>
-      ${summary ? `${sectionHeader("Professional summary", a.h2, a.line)}<p class="mb-7 text-sm leading-relaxed text-zinc-800">${nl2br(summary)}</p>` : ""}
-      ${exp ? `${sectionHeader("Experience", a.h2, a.line)}<section class="mb-7">${exp}</section>` : ""}
-      ${edu ? `${sectionHeader("Education", a.h2, a.line)}<section class="mb-7">${edu}</section>` : ""}
-      ${
-        skills
-          ? `${sectionHeader("Skills", a.h2, a.line)}${lines.length ? skillsPillsHtml(lines) : `<p class="text-sm leading-relaxed text-zinc-700 whitespace-pre-wrap">${nl2br(skills)}</p>`}`
-          : ""
-      }
+      ${summary ? `<section class="mb-8">${sectionHeader("Summary", a.h2, a.line)}<p class="text-[13px] leading-[1.55] text-zinc-800">${nl2br(summary)}</p></section>` : ""}
+      ${exp ? `<section class="mb-8">${sectionHeader("Experience", a.h2, a.line)}${exp}</section>` : ""}
+      ${edu ? `<section class="mb-8">${sectionHeader("Education", a.h2, a.line)}${edu}</section>` : ""}
+      ${skills ? `<section>${sectionHeader("Skills", a.h2, a.line)}${skillsAtsHtml(draft)}</section>` : ""}
     </article>`;
 }
 

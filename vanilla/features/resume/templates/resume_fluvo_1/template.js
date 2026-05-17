@@ -1,5 +1,5 @@
-import { renderLayoutClassicPro } from "../resume-professional-parts.js";
+﻿import { renderCvTemplate } from "../cv-multipage-core.js";
 
 export function renderResumeFluvo1Template(draft) {
-  return renderLayoutClassicPro(draft, "blue");
+  return renderCvTemplate(draft, 1);
 }

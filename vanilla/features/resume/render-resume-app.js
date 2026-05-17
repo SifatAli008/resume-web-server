@@ -4,6 +4,7 @@ import {
   isKnownResumeTemplateId,
 } from "./constants.js";
 import { defaultResumeDraft, loadResumeDraft, normalizeResumeDraft, saveResumeDraft } from "./draft.js";
+import { applyTemplatePhotoDefaults } from "./templates/cv-defaults.js";
 import { escapeHtml } from "./escape-html.js";
 import { mountResumeEditablePreview } from "./editable-resume-preview.js";
 
@@ -15,6 +16,7 @@ export function mountResumeApp(app) {
     draft = normalizeResumeDraft({ ...draft, templateId: fromUrl });
     saveResumeDraft(draft);
   }
+  draft = applyTemplatePhotoDefaults(draft, draft.templateId, "load");
 
   const root = document.createElement("div");
   root.className = "mx-auto max-w-4xl px-4 pb-16 pt-6";
@@ -22,7 +24,7 @@ export function mountResumeApp(app) {
     <div class="print:hidden mb-4 flex flex-wrap items-center justify-between gap-4">
       <div>
         <h1 class="text-2xl font-bold tracking-tight text-zinc-900">Resume builder</h1>
-        <p class="mt-1 max-w-xl text-sm text-zinc-600">Edit directly in the layout below. Every template uses the same refined typography and surfaces. Changes save in this browser; use print to export PDF.</p>
+        <p class="mt-1 max-w-xl text-sm text-zinc-600">International 3-page A4 CV — 20 unique designs. Edit placeholders below; print to PDF for applications.</p>
       </div>
       <div class="flex flex-wrap items-center gap-2">
         <label class="sr-only" for="rf-template">Template</label>
@@ -65,6 +67,7 @@ export function mountResumeApp(app) {
     templateSelect.addEventListener("change", () => {
       const v = templateSelect.value;
       draft.templateId = isKnownResumeTemplateId(v) ? v : DEFAULT_RESUME_TEMPLATE_ID;
+      draft = applyTemplatePhotoDefaults(draft, draft.templateId, "switch");
       saveResumeDraft(draft);
       editable.remount();
       syncTemplateUrl();

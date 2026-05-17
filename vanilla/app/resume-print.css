@@ -1,21 +1,139 @@
 @page {
   size: A4;
-  margin: 12mm;
+  margin: 0;
 }
+
+.resume-preview-article,
+.cv-document {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.45;
+  color: #18181b;
+}
+
+/* —— 20 unique font personalities —— */
+.cv-font-geneva { font-family: "Segoe UI", system-ui, sans-serif; }
+.cv-font-cascade { font-family: "Trebuchet MS", "Segoe UI", sans-serif; letter-spacing: 0.01em; }
+.cv-font-zurich { font-family: "Helvetica Neue", Arial, sans-serif; letter-spacing: 0.02em; }
+.cv-font-oxford { font-family: Georgia, "Times New Roman", Times, serif; }
+.cv-font-kyoto { font-family: "Hiragino Sans", "Segoe UI", sans-serif; letter-spacing: 0.015em; }
+.cv-font-singapore { font-family: "Gill Sans", "Segoe UI", sans-serif; }
+.cv-font-oslo { font-family: "Segoe UI", system-ui, sans-serif; letter-spacing: 0.025em; font-weight: 450; }
+.cv-font-berlin { font-family: "Arial Narrow", "Helvetica Neue", Arial, sans-serif; letter-spacing: 0.03em; text-transform: none; }
+.cv-font-manhattan { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: -0.01em; }
+.cv-font-sydney { font-family: "Segoe UI", system-ui, sans-serif; }
+.cv-font-montreal { font-family: "Palatino Linotype", Palatino, Georgia, serif; }
+.cv-font-cambridge { font-family: "Times New Roman", Times, Georgia, serif; }
+.cv-font-milan { font-family: "Helvetica Neue", Arial, sans-serif; letter-spacing: 0.04em; }
+.cv-font-stockholm { font-family: "Segoe UI", system-ui, sans-serif; font-weight: 400; }
+.cv-font-toronto { font-family: "Segoe UI", "Helvetica Neue", sans-serif; }
+.cv-font-barcelona { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; letter-spacing: -0.02em; }
+.cv-font-melbourne { font-family: "Book Antiqua", Palatino, Georgia, serif; }
+.cv-font-paris { font-family: Georgia, "Times New Roman", serif; font-style: normal; }
+.cv-font-vienna { font-family: "Times New Roman", Times, serif; }
+.cv-font-lisbon { font-family: "Segoe UI", system-ui, sans-serif; }
+
+.cv-serif-body h1,
+.cv-serif-body h2,
+.cv-serif-body h3 { font-family: inherit; }
+
+.cv-page {
+  box-sizing: border-box;
+  width: 210mm;
+  min-height: 297mm;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1rem;
+  padding: 14mm 16mm 16mm;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
+}
+
+.cv-page-body { flex: 1; }
+.cv-avoid-break { break-inside: avoid; page-break-inside: avoid; }
+.cv-page-footer { display: none !important; }
+.cv-no-photo .cv-photo-slot { display: none !important; }
+.cv-has-photo .cv-photo-slot { display: block; }
+.cv-photo-slot img { max-width: 100%; height: 100%; }
+.cv-photo-editor { max-width: 210mm; margin-left: auto; margin-right: auto; }
+.cv-links-display { pointer-events: none; }
+@media screen { .cv-links-display { opacity: 0.85; } }
+.cv-link-row .cv-link-icon { margin-top: 0.15rem; }
 
 @media print {
-  body {
-    background: #fff !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  #app {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-  }
-
-  .resume-preview-article {
-    max-width: none !important;
-  }
+  textarea[data-f="skills"] { display: none !important; }
+  .cv-skills-preview { display: block !important; }
 }
+.cv-skills-preview { margin-top: 0.25rem; }
+.cv-skill-chip { break-inside: avoid; }
+
+@media print {
+  body { background: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  #app { padding-top: 0 !important; padding-bottom: 0 !important; }
+  .resume-preview-article, .cv-document { max-width: none !important; box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; }
+  .cv-page { width: auto; min-height: auto; margin: 0; padding: 14mm 16mm 16mm; box-shadow: none; break-after: page; page-break-after: always; }
+  .cv-page:last-child { break-after: auto; page-break-after: auto; }
+  #resume-print-root input, #resume-print-root textarea { border: none !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; outline: none !important; }
+  #resume-print-root input::placeholder, #resume-print-root textarea::placeholder { color: transparent !important; }
+  .print\:hidden { display: none !important; }
+}
+
+/* —— Template 1–20: color, page frame, sidebar —— */
+.cv-tpl-1 .cv-page { border-top: 5px solid #2563eb; }
+.cv-tpl-1 .cv-page h2 { color: #1e3a8a; }
+
+.cv-tpl-2 .cv-sidebar { background: linear-gradient(180deg, #09090b 0%, #14532d 100%) !important; }
+.cv-tpl-2 .cv-page { box-shadow: 0 4px 16px rgb(16 185 129 / 0.15); }
+
+.cv-tpl-3 .cv-page { border-top: 4px solid #f59e0b; }
+.cv-tpl-3 .cv-rail-zurich { background: #fffbeb !important; }
+
+.cv-tpl-4.cv-font-oxford .cv-page { border: 2px solid #c7d2fe; background: #fafaff; }
+.cv-tpl-4 .cv-page [class*="bg-indigo-900"] { background: #312e81 !important; }
+
+.cv-tpl-5 .cv-page-body { border-left: 4px solid #8b5cf6; padding-left: 1rem; }
+.cv-tpl-5 .cv-timeline-kyoto { --cv-tl: #8b5cf6; }
+
+.cv-tpl-6 .cv-page { background: linear-gradient(165deg, #faf5ff 0%, #fff 50%); }
+.cv-tpl-6 .cv-page:nth-child(2) { background: linear-gradient(165deg, #fff 0%, #f5f3ff 100%); }
+
+.cv-tpl-7 .cv-sidebar { background: linear-gradient(180deg, #042f2e 0%, #065f46 100%) !important; }
+.cv-tpl-7 .cv-page { box-shadow: inset 0 0 0 1px rgb(20 184 166 / 0.2); }
+
+.cv-tpl-8 .cv-page { outline: 2px solid #6ee7b7; outline-offset: -3px; }
+.cv-tpl-8 .cv-band-berlin h2 { letter-spacing: 0.18em; }
+
+.cv-tpl-9 .cv-page:first-child { padding-top: 10mm; }
+.cv-tpl-9 .cv-banner-manhattan + header input { color: #fff; }
+
+.cv-tpl-10 .cv-sidebar { background: linear-gradient(180deg, #0f172a 0%, #0c4a6e 100%) !important; }
+.cv-tpl-10 .cv-page { border-right: 3px solid #0ea5e9; }
+
+.cv-tpl-11.cv-font-montreal .cv-page { border: 1px solid #ddd6fe; background: #faf5ff; }
+.cv-tpl-11 .cv-rail-montreal { background: #f5f3ff !important; }
+
+.cv-tpl-12.cv-font-cambridge .cv-page { border: 2px double #a1a1aa; padding: 15mm 17mm; }
+.cv-tpl-12 .cv-double-cambridge h2 { font-variant: small-caps; }
+
+.cv-tpl-13 .cv-page { border-left: 6px solid #f43f5e; background: linear-gradient(90deg, #fff1f2 0%, #fff 12%); }
+
+.cv-tpl-14 .cv-sidebar { background: linear-gradient(180deg, #020617 0%, #0c4a6e 80%) !important; }
+
+.cv-tpl-15 .cv-page { border-left: 5px solid #06b6d4; }
+.cv-tpl-15 .cv-rail-toronto { background: #ecfeff !important; }
+
+.cv-tpl-16.cv-font-barcelona .cv-page h2 { letter-spacing: 0.14em; font-weight: 700; text-transform: uppercase; font-size: 10px; }
+.cv-tpl-16 .cv-swiss-barcelona h1 { font-weight: 800; letter-spacing: -0.03em; }
+
+.cv-tpl-17.cv-font-melbourne .cv-page { background: #f0fdfa; }
+.cv-tpl-17 .cv-academic-melbourne h2 { color: #115e59; }
+
+.cv-tpl-18.cv-font-paris .cv-page { background: #fdf4ff; }
+.cv-tpl-18 .cv-page:nth-child(2) { background: #faf5ff; }
+.cv-tpl-18 .cv-magazine-paris { column-gap: 2rem; }
+
+.cv-tpl-19.cv-font-vienna .cv-page { border-top: 2px solid #a1a1aa; border-bottom: 2px solid #a1a1aa; }
+.cv-tpl-19 .cv-vienna-center header { text-align: center; }
+
+.cv-tpl-20 .cv-sidebar { background: linear-gradient(180deg, #4c0519 0%, #9f1239 100%) !important; }
+.cv-tpl-20 .cv-page { box-shadow: 0 0 0 1px rgb(190 18 60 / 0.25); }

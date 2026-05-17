@@ -1,5 +1,5 @@
-import { renderLayoutSplitPro } from "../resume-professional-parts.js";
+﻿import { renderCvTemplate } from "../cv-multipage-core.js";
 
 export function renderResumeFluvo3Template(draft) {
-  return renderLayoutSplitPro(draft, "amber");
+  return renderCvTemplate(draft, 3);
 }

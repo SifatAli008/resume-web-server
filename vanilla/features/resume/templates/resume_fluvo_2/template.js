@@ -1,9 +1,5 @@
-import { renderLayoutSidebarPro } from "../resume-professional-parts.js";
+﻿import { renderCvTemplate } from "../cv-multipage-core.js";
 
 export function renderResumeFluvo2Template(draft) {
-  return renderLayoutSidebarPro(draft, {
-    sidebarBg: "bg-zinc-900",
-    accent: "emerald",
-    rail: "border-zinc-700",
-  });
+  return renderCvTemplate(draft, 2);
 }
