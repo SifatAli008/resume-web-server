@@ -1,0 +1,247 @@
+/* Canva / PDF reference designs — per-template visual identity */
+
+#resume-print-root.cv-v2 .cv-canva-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cv-text-2);
+  margin: 0 0 0.5rem;
+}
+
+#resume-print-root.cv-v2 .cv-canva-title-role {
+  font-size: var(--cv-sz-role);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cv-a600);
+  margin: 0.25rem 0 0.75rem;
+}
+
+#resume-print-root.cv-v2 .cv-canva-header-classic .cv-name {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+#resume-print-root.cv-v2 .cv-canva-contact-stack p {
+  margin: 0 0 0.65rem;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+#resume-print-root.cv-v2 .cv-canva-contact-stack strong {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cv-text-3);
+  font-weight: 600;
+  margin-bottom: 0.15rem;
+}
+
+#resume-print-root.cv-v2 .cv-canva-sidebar-panel {
+  background: var(--cv-a50);
+  border-right: 3px solid var(--cv-a600);
+  padding: 1rem 1.1rem;
+  height: 100%;
+  min-height: 100%;
+}
+
+#resume-print-root.cv-v2 .cv-canva-sidebar-dark-panel {
+  background: var(--cv-a800);
+  color: #f8fafc;
+  padding: 1.25rem 1rem;
+  border-radius: 0;
+}
+
+#resume-print-root.cv-v2 .cv-canva-sidebar-dark-panel .cv-canva-label,
+#resume-print-root.cv-v2 .cv-canva-sidebar-dark-panel .cv-sec-title,
+#resume-print-root.cv-v2 .cv-canva-sidebar-dark-panel .cv-body {
+  color: #f1f5f9;
+}
+
+#resume-print-root.cv-v2 .cv-canva-split-28-72 {
+  display: grid;
+  grid-template-columns: 28% 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+#resume-print-root.cv-v2 .cv-canva-split-32-68 {
+  display: grid;
+  grid-template-columns: 32% 1fr;
+  gap: 1.35rem;
+  align-items: start;
+}
+
+#resume-print-root.cv-v2 .cv-canva-split-35-65 {
+  display: grid;
+  grid-template-columns: 35% 1fr;
+  gap: 1.25rem;
+}
+
+#resume-print-root.cv-v2 .cv-canva-web-split {
+  display: grid;
+  grid-template-columns: 1fr 38%;
+  gap: 1.5rem;
+}
+
+#resume-print-root.cv-v2 .cv-canva-web-split .cv-canva-rail {
+  border-left: 2px solid var(--cv-a200);
+  padding-left: 1rem;
+}
+
+#resume-print-root.cv-v2 .cv-canva-hero-name {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--cv-text-1);
+  margin: 0;
+}
+
+#resume-print-root.cv-v2 .cv-canva-hero-sub {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--cv-a600);
+  margin: 0.35rem 0 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+#resume-print-root.cv-v2 .cv-canva-vertical-name {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+#resume-print-root.cv-v2 .cv-canva-vertical-name .cv-vname-stack {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 2.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  color: var(--cv-a800);
+  text-transform: uppercase;
+  max-height: 220mm;
+}
+
+#resume-print-root.cv-v2 .cv-canva-centered-head {
+  text-align: center;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--cv-a600);
+}
+
+#resume-print-root.cv-v2 .cv-canva-centered-head .cv-name {
+  text-transform: uppercase;
+}
+
+#resume-print-root.cv-v2 .cv-canva-contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem 1rem;
+  font-size: 11px;
+  color: var(--cv-text-2);
+  margin-top: 0.5rem;
+}
+
+#resume-print-root.cv-v2 .cv-canva-creative-banner {
+  background: var(--cv-a800);
+  color: #fff;
+  padding: 1.5rem 1.25rem 1rem;
+  margin: 0 0 1.25rem;
+  border-radius: 2px;
+}
+
+#resume-print-root.cv-v2 .cv-canva-creative-banner .cv-name,
+#resume-print-root.cv-v2 .cv-canva-creative-banner .cv-canva-title-role {
+  color: #fff;
+}
+
+#resume-print-root.cv-v2 .cv-canva-achievement-item {
+  margin-bottom: 0.75rem;
+}
+
+#resume-print-root.cv-v2 .cv-canva-achievement-item strong {
+  display: block;
+  font-size: 13px;
+  color: var(--cv-text-1);
+  margin-bottom: 0.15rem;
+}
+
+#resume-print-root.cv-v2 .cv-canva-edu-row {
+  margin-bottom: 0.85rem;
+}
+
+#resume-print-root.cv-v2 .cv-canva-edu-row .cv-date-col {
+  font-weight: 600;
+}
+
+#resume-print-root.cv-v2 .cv-canva-ref-block {
+  font-size: 12px;
+  margin-bottom: 0.75rem;
+}
+
+#resume-print-root.cv-v2 .cv-canva-ref-block strong {
+  display: block;
+  font-size: 13px;
+}
+
+/* Per-template accent bars */
+[data-template="resume_01"] .cv-page:first-of-type::before,
+[data-template="resume_07"] .cv-page:first-of-type::before,
+[data-template="resume_13"] .cv-page:first-of-type::before {
+  background: #1e3a5f;
+}
+[data-template="resume_02"] .cv-page:first-of-type::before {
+  background: #0d9488;
+}
+[data-template="resume_03"] .cv-page:first-of-type::before {
+  background: #be123c;
+}
+[data-template="resume_04"] .cv-page:first-of-type::before {
+  background: #7c3aed;
+}
+[data-template="resume_05"] .cv-page:first-of-type::before,
+[data-template="resume_12"] .cv-page:first-of-type::before {
+  background: #ea580c;
+}
+[data-template="resume_06"] .cv-page:first-of-type::before {
+  background: #334155;
+}
+[data-template="resume_08"] .cv-page:first-of-type::before,
+[data-template="resume_16"] .cv-page:first-of-type::before {
+  background: #0369a1;
+}
+[data-template="resume_09"] .cv-page:first-of-type::before {
+  background: #4f46e5;
+}
+[data-template="resume_10"] .cv-page:first-of-type::before,
+[data-template="resume_11"] .cv-page:first-of-type::before {
+  background: #0f766e;
+}
+[data-template="resume_14"] .cv-page:first-of-type::before {
+  background: #1d4ed8;
+}
+[data-template="resume_15"] .cv-page:first-of-type::before {
+  background: #db2777;
+}
+[data-template="resume_17"] .cv-page:first-of-type::before {
+  background: #9333ea;
+}
+[data-template="resume_18"] .cv-page:first-of-type::before {
+  background: #b45309;
+}
+[data-template="resume_19"] .cv-page:first-of-type::before,
+[data-template="resume_20"] .cv-page:first-of-type::before {
+  background: #0e7490;
+}
+
+[data-template="resume_10"] .cv-canva-label,
+[data-template="resume_11"] .cv-canva-label {
+  color: var(--cv-a700);
+}

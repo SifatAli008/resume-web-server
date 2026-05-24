@@ -1,0 +1,373 @@
+/* Resume V2 — locked global tokens */
+:root {
+  --cv-sz-name: 1.75rem;
+  --cv-wt-name: 800;
+  --cv-tr-name: -0.025em;
+  --cv-sz-role: 0.9rem;
+  --cv-wt-role: 400;
+  --cv-tr-role: 0.01em;
+  --cv-sz-body: 14px;
+  --cv-lh-body: 1.45;
+  --cv-sz-section: 10px;
+  --cv-sz-date: 12px;
+  --cv-sz-meta: 10px;
+  --cv-col-date: 7rem;
+  --cv-gap-date: 1.25rem;
+  --cv-gap-sec: 1.75rem;
+  --cv-gap-blk: 1.25rem;
+  --cv-gap-row: 1rem;
+  --cv-text-1: #18181b;
+  --cv-text-2: #52525b;
+  --cv-text-3: #a1a1aa;
+  --cv-bdr-m: #e4e4e7;
+  --cv-bdr-s: #a1a1aa;
+  --cv-pad-v: 14mm;
+  --cv-pad-h: 16mm;
+  --cv-pad-b: 16mm;
+}
+
+.cv-page-formal,
+[data-template="resume_12"],
+[data-template="resume_19"] {
+  --cv-pad-v: 15mm;
+  --cv-pad-h: 17mm;
+}
+
+@page {
+  size: A4;
+  margin: var(--cv-pad-v) var(--cv-pad-h);
+}
+
+#resume-print-root.cv-v2,
+#resume-print-root.cv-v2 * {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+#resume-print-root.cv-v2 {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: var(--cv-sz-body);
+  line-height: var(--cv-lh-body);
+  color: var(--cv-text-1);
+  box-sizing: border-box;
+}
+
+#resume-print-root.cv-v2 *,
+#resume-print-root.cv-v2 *::before,
+#resume-print-root.cv-v2 *::after {
+  box-sizing: border-box;
+}
+
+#resume-print-root.cv-v2 .cv-page {
+  width: 100%;
+  max-width: 210mm;
+  min-height: 297mm;
+  box-sizing: border-box;
+  padding: var(--cv-pad-v) var(--cv-pad-h) var(--cv-pad-b);
+  background: #fff;
+  position: relative;
+}
+
+#resume-print-root.cv-v2 .cv-page + .cv-page {
+  break-before: page;
+  page-break-before: always;
+}
+
+#resume-print-root.cv-v2 .cv-row {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  margin-bottom: var(--cv-gap-row);
+}
+
+#resume-print-root.cv-v2 .cv-sec {
+  margin-bottom: var(--cv-gap-sec);
+}
+
+#resume-print-root.cv-v2 .cv-sec-title {
+  break-after: avoid;
+  page-break-after: avoid;
+  font-size: var(--cv-sz-section);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cv-text-1);
+  margin-bottom: 0.65rem;
+}
+
+#resume-print-root.cv-v2 .cv-sec-icon {
+  color: var(--cv-icon-sec);
+  flex-shrink: 0;
+}
+
+#resume-print-root.cv-v2 .cv-name {
+  font-size: var(--cv-sz-name);
+  font-weight: var(--cv-wt-name);
+  letter-spacing: var(--cv-tr-name);
+  text-transform: uppercase;
+  line-height: 1.15;
+  color: var(--cv-text-1);
+  border: 0;
+  background: transparent;
+  width: 100%;
+  display: block;
+}
+
+#resume-print-root.cv-v2 .cv-doc-label {
+  font-size: var(--cv-sz-meta);
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--cv-text-2);
+  margin: 0 0 0.35rem;
+}
+
+#resume-print-root.cv-v2 .cv-body,
+#resume-print-root.cv-v2 .cv-bullets {
+  font-size: var(--cv-sz-body);
+  line-height: var(--cv-lh-body);
+  color: var(--cv-text-1);
+}
+
+#resume-print-root.cv-v2 .cv-bullets {
+  margin: 0.35rem 0 0 1.1rem;
+  padding: 0;
+}
+
+#resume-print-root.cv-v2 .cv-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.15rem 0;
+  font-size: var(--cv-sz-meta);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cv-text-2);
+  margin-bottom: var(--cv-gap-blk);
+}
+
+#resume-print-root.cv-v2 .cv-masthead {
+  margin-bottom: var(--cv-gap-blk);
+}
+
+#resume-print-root.cv-v2 .cv-masthead-center {
+  text-align: center;
+}
+
+#resume-print-root.cv-v2 .cv-swiss-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+#resume-print-root.cv-v2 .cv-swiss-head .cv-masthead {
+  margin-bottom: 0;
+  flex: 1;
+}
+
+#resume-print-root.cv-v2 .cv-role-title {
+  font-size: var(--cv-sz-role);
+  font-weight: var(--cv-wt-role);
+  letter-spacing: var(--cv-tr-role);
+  color: var(--cv-text-2);
+  text-align: right;
+  max-width: 42%;
+  line-height: 1.35;
+}
+
+#resume-print-root.cv-v2 .cv-meta-dot {
+  color: var(--cv-text-3);
+}
+
+#resume-print-root.cv-v2 .cv-date-col {
+  white-space: nowrap;
+  font-size: var(--cv-sz-date);
+  color: var(--cv-text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+#resume-print-root.cv-v2 .cv-exp-row {
+  display: grid;
+  grid-template-columns: var(--cv-col-date) 1fr;
+  column-gap: var(--cv-gap-date);
+}
+
+#resume-print-root.cv-v2 .cv-exp-role {
+  font-weight: 600;
+  color: var(--cv-text-1);
+}
+
+#resume-print-root.cv-v2 .cv-exp-co {
+  color: var(--cv-text-2);
+}
+
+#resume-print-root.cv-v2 input,
+#resume-print-root.cv-v2 textarea {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: transparent;
+  width: 100%;
+  padding: 0.1rem 0;
+  resize: vertical;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+#resume-print-root.cv-v2 .cv-name {
+  border-bottom: 1px solid transparent;
+}
+
+#resume-print-root.cv-v2 .cv-body textarea {
+  min-height: 4.5rem;
+  line-height: var(--cv-lh-body);
+}
+
+#resume-print-root.cv-v2 .cv-photo-slot {
+  border: 2px solid var(--cv-a200);
+  background: var(--cv-a100);
+  color: var(--cv-a800);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: var(--cv-gap-blk);
+}
+
+#resume-print-root.cv-v2 .cv-photo-hidden {
+  visibility: hidden;
+  height: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+}
+
+#resume-print-root.cv-v2 .cv-photo-round {
+  border-radius: 9999px;
+}
+#resume-print-root.cv-v2 .cv-photo-sq {
+  border-radius: 0;
+}
+#resume-print-root.cv-v2 .cv-photo-rounded-sm {
+  border-radius: 4px;
+}
+#resume-print-root.cv-v2 .cv-photo-sm {
+  width: 64px;
+  height: 64px;
+}
+#resume-print-root.cv-v2 .cv-photo-md {
+  width: 72px;
+  height: 72px;
+}
+#resume-print-root.cv-v2 .cv-photo-lg {
+  width: 80px;
+  height: 80px;
+}
+
+#resume-print-root.cv-v2 .cv-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#resume-print-root.cv-v2 .cv-footer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--cv-gap-blk);
+}
+
+@media print {
+  .builder-ui,
+  .photo-bar,
+  .no-print {
+    display: none !important;
+  }
+  #resume-print-root.cv-v2 [data-sidebar-gradient] {
+    background: var(--cv-a800) !important;
+    background-image: none !important;
+  }
+}
+
+#resume-print-root.cv-v2 .cv-split {
+  display: flex;
+  gap: var(--cv-gap-blk);
+  align-items: stretch;
+}
+
+#resume-print-root.cv-v2 .cv-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+#resume-print-root.cv-v2 .cv-sidebar-rail {
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+#resume-print-root.cv-v2 .cv-sidebar-rail:not(.cv-sidebar-dark) {
+  background: var(--cv-a50);
+  border: 1px solid var(--cv-bdr-m);
+  padding: 1rem;
+  border-radius: 4px;
+}
+
+#resume-print-root.cv-v2 .cv-sidebar-dark {
+  background: linear-gradient(165deg, var(--cv-a800) 0%, var(--cv-a700) 100%);
+  color: #fff;
+  padding: 1rem;
+  border-radius: 4px;
+  border: 0;
+}
+
+#resume-print-root.cv-v2 .cv-sidebar-dark .cv-sec-title,
+#resume-print-root.cv-v2 .cv-sidebar-dark .cv-body,
+#resume-print-root.cv-v2 .cv-sidebar-dark .cv-skills-plain-row,
+#resume-print-root.cv-v2 .cv-sidebar-dark .cv-meta-value {
+  color: #f4f4f5;
+}
+
+#resume-print-root.cv-v2 .cv-sidebar-dark .cv-sec-icon {
+  color: var(--cv-a200);
+}
+
+#resume-print-root.cv-v2 .cv-sidebar-dark a {
+  color: #e0f2fe;
+}
+
+#resume-print-root.cv-v2 .cv-serif-doc {
+  font-family: "Georgia", "Times New Roman", serif;
+  max-width: 148mm;
+  margin: 0 auto;
+}
+
+#resume-print-root.cv-v2 .cv-serif-doc .cv-name {
+  font-family: inherit;
+}
+
+#resume-print-root.cv-v2 .cv-exp-table-html {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--cv-sz-body);
+}
+
+#resume-print-root.cv-v2 .cv-exp-table-html th {
+  text-align: left;
+  font-size: var(--cv-sz-section);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--cv-text-1);
+  padding-bottom: 0.35rem;
+}
+
+#resume-print-root.cv-v2 .cv-exp-table-html td {
+  vertical-align: top;
+  padding: 0.5rem 0.35rem 0.5rem 0;
+  border-bottom: 1px solid var(--cv-bdr-m);
+}
+
+#resume-print-root.cv-v2 thead {
+  display: table-header-group;
+}

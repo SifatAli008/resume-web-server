@@ -1,0 +1,135 @@
+#resume-print-root.cv-v2 .cv-hairline {
+  border-bottom: 1px solid var(--cv-text-1);
+  margin-bottom: var(--cv-gap-blk);
+}
+#resume-print-root.cv-v2 .cv-timeline {
+  border-left: 4px solid var(--cv-a500);
+  padding-left: 0.75rem;
+}
+#resume-print-root.cv-v2 .cv-mag-hero {
+  display: grid;
+  grid-template-columns: 58% 42%;
+  gap: var(--cv-gap-blk);
+  margin-bottom: var(--cv-gap-sec);
+}
+#resume-print-root.cv-v2 .cv-banded {
+  background: var(--cv-a50);
+  padding: 0.75rem;
+  margin-bottom: var(--cv-gap-sec);
+}
+#resume-print-root.cv-v2 .cv-band {
+  background: var(--cv-a100);
+  padding: 0.75rem 1rem;
+  margin-bottom: var(--cv-gap-sec);
+}
+#resume-print-root.cv-v2 .cv-exec-banner {
+  background: var(--cv-a800);
+  color: #fff;
+  padding: 1.1rem 1.25rem;
+  margin: 0 0 var(--cv-gap-sec);
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+#resume-print-root.cv-v2 .cv-exec-banner .cv-meta-row,
+#resume-print-root.cv-v2 .cv-exec-banner .cv-doc-label,
+#resume-print-root.cv-v2 .cv-exec-banner .cv-name {
+  color: #fff;
+}
+#resume-print-root.cv-v2 .cv-box {
+  border: 1px solid var(--cv-bdr-m);
+  padding: 1rem;
+  margin-bottom: var(--cv-gap-sec);
+}
+#resume-print-root.cv-v2 .cv-asym-summary {
+  border-left: 6px solid var(--cv-a500);
+  padding-left: 0.75rem;
+  margin-bottom: var(--cv-gap-sec);
+}
+#resume-print-root.cv-v2 .cv-asym-role {
+  margin: 0.25rem 0 var(--cv-gap-blk) 12%;
+  font-size: var(--cv-sz-role);
+  letter-spacing: var(--cv-tr-role);
+  color: var(--cv-a600);
+  font-weight: 500;
+}
+#resume-print-root.cv-v2 .cv-proj-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--cv-gap-blk);
+}
+#resume-print-root.cv-v2 .cv-card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--cv-gap-blk);
+  margin-bottom: var(--cv-gap-sec);
+}
+#resume-print-root.cv-v2 .cv-card {
+  border: 1px solid var(--cv-bdr-m);
+  padding: 0.75rem;
+  break-inside: avoid;
+}
+#resume-print-root.cv-v2 .cv-card-dark {
+  background: #27272a;
+  color: #fafafa;
+}
+#resume-print-root.cv-v2 .cv-card-dark .cv-sec-title {
+  color: #fafafa;
+}
+#resume-print-root.cv-v2 .cv-grid12 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 0.5rem 0.65rem;
+}
+#resume-print-root.cv-v2 .cv-g12-name {
+  grid-column: span 8;
+}
+#resume-print-root.cv-v2 .cv-g12-meta {
+  grid-column: span 4;
+}
+#resume-print-root.cv-v2 .cv-g12-sum {
+  grid-column: span 8;
+}
+#resume-print-root.cv-v2 .cv-g12-skills {
+  grid-column: span 4;
+}
+#resume-print-root.cv-v2 .cv-g12-exp {
+  grid-column: span 12;
+}
+#resume-print-root.cv-v2 .cv-news-rule {
+  border-top: 2px solid var(--cv-text-1);
+  margin-bottom: var(--cv-gap-blk);
+}
+#resume-print-root.cv-v2 .cv-news-cols {
+  column-count: 2;
+  column-gap: 1.25rem;
+  column-rule: 1px solid var(--cv-bdr-m);
+  margin-bottom: var(--cv-gap-sec);
+}
+#resume-print-root.cv-v2 .cv-news-cols-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--cv-gap-blk);
+}
+#resume-print-root.cv-v2 .cv-brutal-top {
+  border-top: 6px solid var(--cv-a800);
+  margin-bottom: var(--cv-gap-sec);
+}
+#resume-print-root.cv-v2 .cv-prism-hero {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: end;
+  background: var(--cv-a50);
+  padding: 1rem;
+  margin-bottom: var(--cv-gap-sec);
+}
+#resume-print-root.cv-v2 .cv-prism-mast {
+  padding-bottom: 0.25rem;
+}
+#resume-print-root.cv-v2 .cv-rail-tint {
+  background: var(--cv-a50);
+  padding: 0.5rem;
+}
+#resume-print-root.cv-v2 .cv-dense .cv-sec {
+  margin-bottom: 1.25rem;
+}

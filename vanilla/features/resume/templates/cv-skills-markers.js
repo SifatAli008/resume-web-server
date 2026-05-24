@@ -1,0 +1,23 @@
+/** HTML markers per skills style — used by quality-gate audit. */
+export const SKILLS_STYLE_MARKERS = {
+  pills: ["rounded-full", "px-2.5", "py-0.5"],
+  "pills-dark": ["rounded-full"],
+  grouped: ["text-[10px] font-bold uppercase"],
+  outline: ["ring-1", "ring-current"],
+  grid: ["grid-cols-2"],
+  cards: ["rounded-lg"],
+  bars: ["w-[100px]"],
+  "tags-band": ["inline-flex"],
+  "minimal-row": [", "],
+  "sky-chips": ["bg-sky-100", "text-sky-800"],
+  "serif-blocks": ["font-serif", "border-b"],
+  "slate-list": ["list-disc", "text-slate-600"],
+  "rose-tiles": ["border-rose-200", "bg-rose-50"],
+  "compact-dark": ["bg-zinc-700", "text-zinc-100"],
+  "cyan-stack": ["border-cyan-100"],
+  "swiss-dense": ["font-mono"],
+  academic: ["list-decimal"],
+  "magazine-cols": ["columns-2", "break-inside-avoid"],
+  underline: ["border-b-2", "border-zinc-400"],
+  "gradient-dark": ["bg-gradient-to-r", "from-rose-900"],
+};

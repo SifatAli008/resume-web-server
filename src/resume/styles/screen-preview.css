@@ -1,0 +1,83 @@
+/* Builder screen preview — A4 pages as cards (print uses full bleed) */
+#rf-preview-shell {
+  background: #e4e4e7;
+}
+
+#rf-preview,
+.cv-preview-scale {
+  margin: 0 auto;
+  max-width: 210mm;
+}
+
+@media screen {
+  .cv-preview-scale {
+    transform: scale(0.72);
+    transform-origin: top center;
+    width: 210mm;
+    margin-bottom: -8rem;
+  }
+
+  .cv-preview-scale #resume-print-root.cv-v2 .cv-page {
+    min-height: auto;
+  }
+}
+
+@media screen {
+  #resume-print-root.cv-v2 .cv-page {
+    min-height: auto;
+    height: auto;
+    margin: 0 auto 1.25rem;
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.06),
+      0 8px 24px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--cv-bdr-m);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  #resume-print-root.cv-v2 .cv-page:last-child {
+    margin-bottom: 0;
+  }
+
+  #resume-print-root.cv-v2 .cv-page + .cv-page {
+    break-before: auto;
+    page-break-before: auto;
+  }
+
+  #resume-print-root.cv-v2 input:focus,
+  #resume-print-root.cv-v2 textarea:focus {
+    outline: 2px solid var(--cv-a400);
+    outline-offset: 2px;
+    border-bottom-color: transparent;
+  }
+
+  #resume-print-root.cv-v2 input:hover,
+  #resume-print-root.cv-v2 textarea:hover {
+    background: var(--cv-a50);
+  }
+}
+
+@media print {
+  #rf-preview {
+    background: transparent;
+    padding: 0;
+  }
+
+  #resume-print-root.cv-v2 .cv-page {
+    min-height: 297mm;
+    margin: 0;
+    box-shadow: none;
+    border: 0;
+    border-radius: 0;
+  }
+
+  #resume-print-root.cv-v2 .cv-page + .cv-page {
+    break-before: page;
+    page-break-before: always;
+  }
+
+  #resume-print-root.cv-v2 input,
+  #resume-print-root.cv-v2 textarea {
+    border: 0 !important;
+  }
+}

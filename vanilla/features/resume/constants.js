@@ -1,55 +1,77 @@
-const FLUVO_NAMES = [
-  "Executive — ruled header, date-aligned experience, skill tags",
-  "Cascade — dark rail, contact, skill proficiency bars",
-  "Split gold — summary + experience | strengths column",
-  "Classic indigo accent",
-  "Classic violet accent",
-  "Split purple executive column",
-  "Emerald sidebar rail",
-  "Engineering bands — green section headers",
-  "Bold banner — contact strip + two-column body",
-  "Navy rail — main + deep blue skills column",
-  "Lavender split — profile + violet skills rail",
-  "Formal serif — centered traditional layout",
-  "Classic rose accent",
-  "Slate sidebar rail",
-  "Split cyan strengths column",
-  "Classic orange accent",
-  "Classic teal accent",
-  "Split fuchsia strengths column",
-  "Formal neutral serif",
-  "Classic purple accent",
-  "Rosewood sidebar rail",
+/** Resume V2 — 20 templates aligned to Untitled design.pdf (pages 1–20). */
+
+const PDF_DESIGN_NAMES = [
+  "Estelle Classic",
+  "Eez Contact Split",
+  "Jacqueline Sidebar",
+  "Juliana Sales Split",
+  "Aaron Creative",
+  "Aaron Professional",
+  "Estelle Process",
+  "Olivia Marketing",
+  "Olivia Product",
+  "Harper Web Split",
+  "Lorna Web Split",
+  "Samira Graphic Top",
+  "Sebastian PM",
+  "Sebastian Accountant",
+  "Juliana Social",
+  "Harper Marketing",
+  "Estelle Content",
+  "Rachelle Copywriter",
+  "Catrine IT Profile",
+  "Catrine IT Timeline",
 ];
 
-export const RESUME_TEMPLATE_IDS = Object.fromEntries(
-  Array.from({ length: 20 }, (_, i) => [`FLUVO_${i + 1}`, `resume_fluvo_${i + 1}`]),
-);
-
-export const RESUME_TEMPLATES = Array.from({ length: 20 }, (_, i) => ({
-  id: `resume_fluvo_${i + 1}`,
-  label: `Fluvo ${i + 1}`,
-  description: FLUVO_NAMES[i] || `Template ${i + 1}`,
+const V2_META = PDF_DESIGN_NAMES.map((name, i) => ({
+  name,
+  layout: `PDF page ${i + 1} · Canva layout`,
 }));
 
-const KNOWN = new Set(RESUME_TEMPLATES.map((t) => t.id));
+export const RESUME_TEMPLATE_IDS = Object.fromEntries(
+  Array.from({ length: 20 }, (_, i) => {
+    const n = String(i + 1).padStart(2, "0");
+    return [`V2_${i + 1}`, `resume_${n}`];
+  }),
+);
+
+/** Legacy fluvo IDs map to V2 for saved drafts and old URLs. */
+export const LEGACY_FLUVO_IDS = Object.fromEntries(
+  Array.from({ length: 20 }, (_, i) => [`resume_fluvo_${i + 1}`, `resume_${String(i + 1).padStart(2, "0")}`]),
+);
+
+export const RESUME_TEMPLATES = V2_META.map((t, i) => {
+  const n = String(i + 1).padStart(2, "0");
+  const id = `resume_${n}`;
+  return {
+    id,
+    label: t.name,
+    description: `${t.layout} · 3-page A4`,
+    legacyId: `resume_fluvo_${i + 1}`,
+  };
+});
+
+const KNOWN = new Set([
+  ...RESUME_TEMPLATES.map((t) => t.id),
+  ...Object.keys(LEGACY_FLUVO_IDS),
+]);
+
+export function normalizeTemplateId(templateId) {
+  const id = String(templateId || "");
+  if (LEGACY_FLUVO_IDS[id]) return LEGACY_FLUVO_IDS[id];
+  const fluvo = /^resume_fluvo_(\d+)$/.exec(id);
+  if (fluvo) return `resume_${fluvo[1].padStart(2, "0")}`;
+  return id;
+}
 
 export function isKnownResumeTemplateId(id) {
   return typeof id === "string" && KNOWN.has(id);
 }
 
-/** Which WYSIWYG chrome to use while editing (maps all 20 Fluvo ids). */
 export function resumeTemplateEditableVariant(templateId) {
-  const m = /^resume_fluvo_(\d+)$/.exec(String(templateId || ""));
-  const n = m ? Number(m[1]) : 1;
-  if ([2, 7, 14, 20].includes(n)) return "sidebar";
-  if ([3, 6, 15, 18].includes(n)) return "split";
-  if (n === 8) return "bands";
-  if (n === 9) return "banner";
-  if (n === 10) return "navy";
-  if (n === 11) return "lavender";
-  if ([12, 19].includes(n)) return "classicSerif";
-  return "classic";
+  const id = normalizeTemplateId(templateId);
+  const m = /^resume_(\d{2})$/.exec(id);
+  return m ? `v2_${m[1]}` : "v2_01";
 }
 
-export const DEFAULT_RESUME_TEMPLATE_ID = RESUME_TEMPLATE_IDS.FLUVO_1;
+export const DEFAULT_RESUME_TEMPLATE_ID = RESUME_TEMPLATE_IDS.V2_1;
