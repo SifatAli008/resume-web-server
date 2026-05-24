@@ -10,7 +10,8 @@ const STORAGE_KEY = "resume-web-server:draft:v3";
 const emptyBullets = () => ["", "", ""];
 const emptyJob = () => ({ company: "", role: "", start: "", end: "", bullets: emptyBullets() });
 const emptyProject = () => ({ name: "", context: "", start: "", end: "", bullets: emptyBullets() });
-const emptyEdu = () => ({ school: "", degree: "", start: "", end: "" });
+const emptyEdu = () => ({ school: "", degree: "", start: "", end: "", notes: "", bullets: ["", ""] });
+const emptyRef = () => ({ name: "", title: "", phone: "", email: "" });
 const emptyLink = () => ({ label: "", url: "" });
 
 export function defaultResumeDraft() {
@@ -31,6 +32,8 @@ export function defaultResumeDraft() {
     skills: "",
     certifications: "",
     languages: "",
+    awards: "",
+    references: [emptyRef(), emptyRef()],
   };
 }
 
@@ -89,6 +92,18 @@ function normalizeEducation(rows) {
     degree: typeof r?.degree === "string" ? r.degree : "",
     start: typeof r?.start === "string" ? r.start : "",
     end: typeof r?.end === "string" ? r.end : "",
+    notes: typeof r?.notes === "string" ? r.notes : "",
+    bullets: normalizeBullets(r?.bullets),
+  }));
+}
+
+function normalizeReferences(rows) {
+  if (!Array.isArray(rows) || !rows.length) return defaultResumeDraft().references;
+  return rows.map((r) => ({
+    name: typeof r?.name === "string" ? r.name : "",
+    title: typeof r?.title === "string" ? r.title : "",
+    phone: typeof r?.phone === "string" ? r.phone : "",
+    email: typeof r?.email === "string" ? r.email : "",
   }));
 }
 
@@ -119,6 +134,8 @@ export function normalizeResumeDraft(raw) {
     skills: typeof raw.skills === "string" ? raw.skills : d.skills,
     certifications: typeof raw.certifications === "string" ? raw.certifications : d.certifications,
     languages: typeof raw.languages === "string" ? raw.languages : d.languages,
+    awards: typeof raw.awards === "string" ? raw.awards : d.awards,
+    references: normalizeReferences(raw.references),
   };
 }
 

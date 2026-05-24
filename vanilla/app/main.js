@@ -8,6 +8,7 @@ function routeKind() {
 
 function renderHome(app) {
   document.title = "Resume Web Server";
+  app.className = "px-4 py-10";
   app.innerHTML = `
     <div class="mx-auto max-w-lg rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
       <h1 class="text-2xl font-bold tracking-tight text-zinc-900">Resume Web Server</h1>
@@ -34,7 +35,10 @@ function render() {
   }
 
   bootstrapResumeDraftFromUrl();
+  app.className = "";
   mountResumeView(app);
 }
 
 render();
+
+window.addEventListener("popstate", () => render());

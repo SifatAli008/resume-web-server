@@ -60,10 +60,10 @@ export function linksDisplay(draft, ui, { dark = false } = {}) {
 
 export function readLinksFromRoot(root) {
   const editor = root.querySelector("[data-links-editor]");
-  if (!editor) return null;
+  const scope = editor || root;
   const seen = new Set();
   const out = [];
-  for (const row of editor.querySelectorAll("[data-link-row]")) {
+  for (const row of scope.querySelectorAll("[data-link-row]")) {
     const i = row.getAttribute("data-link-row");
     if (seen.has(i)) continue;
     seen.add(i);
@@ -72,5 +72,5 @@ export function readLinksFromRoot(root) {
       url: row.querySelector('[data-lf="url"]')?.value ?? "",
     });
   }
-  return out.slice(0, MAX_LINKS);
+  return out.length ? out.slice(0, MAX_LINKS) : null;
 }

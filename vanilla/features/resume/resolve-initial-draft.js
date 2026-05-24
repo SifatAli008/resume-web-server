@@ -1,4 +1,4 @@
-import { DEFAULT_RESUME_TEMPLATE_ID, isKnownResumeTemplateId } from "./constants.js";
+import { DEFAULT_RESUME_TEMPLATE_ID, isKnownResumeTemplateId, normalizeTemplateId } from "./constants.js";
 import { decodeResumeDraftBase64Url } from "./draft-url.js";
 import { defaultResumeDraft, loadResumeDraft, normalizeResumeDraft } from "./draft.js";
 
@@ -42,10 +42,13 @@ export function resolveInitialDraft({ params, pathTemplateId, embedMode, templat
     draft = loadResumeDraft();
   }
 
+  const pathTpl = pathTemplateId ? normalizeTemplateId(pathTemplateId) : null;
+  const queryTpl = templateQuery ? normalizeTemplateId(templateQuery) : null;
+
   const tpl =
-    (pathTemplateId && isKnownResumeTemplateId(pathTemplateId) && pathTemplateId) ||
-    (templateQuery && isKnownResumeTemplateId(templateQuery) && templateQuery) ||
-    (isKnownResumeTemplateId(draft.templateId) ? draft.templateId : DEFAULT_RESUME_TEMPLATE_ID);
+    (pathTpl && isKnownResumeTemplateId(pathTpl) && pathTpl) ||
+    (queryTpl && isKnownResumeTemplateId(queryTpl) && queryTpl) ||
+    (isKnownResumeTemplateId(draft.templateId) ? normalizeTemplateId(draft.templateId) : DEFAULT_RESUME_TEMPLATE_ID);
 
   return normalizeResumeDraft({ ...draft, templateId: tpl });
 }

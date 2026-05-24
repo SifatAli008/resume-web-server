@@ -2,13 +2,13 @@ import { templateWantsPhotoByDefault } from "./cv-defaults.js";
 import { SECTION_ICON_BY_TITLE, TEMPLATE_TOKENS } from "./cv-template-tokens.js";
 
 const LAYOUT = {
-  1: { name: "Geneva", layout: "classic", header: "standard", section: "ruled" },
-  2: { name: "Cascade", layout: "sidebar-left", header: "sidebar", section: "minimal" },
-  3: { name: "Zurich", layout: "split-right", header: "compact", section: "ruled" },
-  4: { name: "Oxford", layout: "ribbon", header: "ribbon", section: "ruled" },
-  5: { name: "Kyoto", layout: "timeline", header: "standard", section: "ruled" },
-  6: { name: "Singapore", layout: "magazine", header: "standard", section: "boxed" },
-  7: { name: "Oslo", layout: "sidebar-left", header: "sidebar", section: "minimal" },
+  1: { name: "Estelle", layout: "estelle", header: "estelle", section: "estelle" },
+  2: { name: "Gallego", layout: "gallego", header: "gallego", section: "gallego" },
+  3: { name: "Mitchell", layout: "mitchell", header: "mitchell", section: "mitchell" },
+  4: { name: "Sanchez", layout: "sanchez", header: "sanchez", section: "sanchez" },
+  5: { name: "Sanchez Black", layout: "sanchez", header: "sanchez", section: "sanchez" },
+  6: { name: "Alvarado", layout: "alvarado", header: "alvarado", section: "alvarado" },
+  7: { name: "Schumacher", layout: "schumacher", header: "schumacher", section: "schumacher" },
   8: { name: "Berlin", layout: "bands", header: "standard", section: "band" },
   9: { name: "Manhattan", layout: "banner", header: "banner", section: "ruled" },
   10: { name: "Sydney", layout: "sidebar-right", header: "sidebar", section: "minimal" },
