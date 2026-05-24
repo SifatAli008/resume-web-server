@@ -9,8 +9,11 @@ export const DEFAULT_CV_PHOTO_URL =
 export const PHOTO_DEFAULT_TEMPLATE_IDS = new Set([2, 4, 7, 10, 14, 18, 20]);
 
 export function tplIdFromTemplateId(templateId) {
-  const m = /^resume_fluvo_(\d+)$/.exec(String(templateId || ""));
-  return m ? Number(m[1]) : 1;
+  const id = String(templateId || "");
+  const v2 = /^resume_(\d{2})$/.exec(id);
+  if (v2) return Number(v2[1]);
+  const fluvo = /^resume_fluvo_(\d+)$/.exec(id);
+  return fluvo ? Number(fluvo[1]) : 1;
 }
 
 export function templateWantsPhotoByDefault(tplId) {

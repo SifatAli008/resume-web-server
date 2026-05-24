@@ -1,0 +1,159 @@
+{
+  "templateId": "resume_fluvo_9",
+  "fullName": "Alexandra Morgan-Whitfield-Senior-Engineering-Lead",
+  "title": "Principal Software Engineer · Platform & Developer Experience",
+  "email": "alexandra.morgan.whitfield.very.long.email.address@northwind-global-enterprise.example.com",
+  "phone": "+1 (555) 010-2200 ext. 8842",
+  "location": "Berlin, Germany · Open to remote across EU/UK",
+  "showPhoto": true,
+  "photoUrl": "",
+  "links": [
+    { "label": "LinkedIn", "url": "https://www.linkedin.com/in/alexandra-morgan-whitfield-senior-engineering" },
+    { "label": "GitHub", "url": "https://github.com/amorgan-whitfield-platform-architecture-repos" },
+    { "label": "Portfolio", "url": "https://portfolio.northwind-global-enterprise.example.com/case-studies/platform-modernization" },
+    { "label": "ORCID", "url": "https://orcid.org/0000-0002-1825-0097" },
+    { "label": "Research", "url": "https://scholar.example.com/citations?user=stress_test_fixture" },
+    { "label": "Blog", "url": "https://engineering.blog.example.com/authors/alexandra-morgan" }
+  ],
+  "summary": "Principal engineer with 14+ years delivering large-scale distributed systems, internal developer platforms, and observability programs across fintech and logistics. Known for reducing incident rates, mentoring staff engineers, and aligning architecture decisions with measurable business outcomes. Comfortable leading cross-region teams, writing RFCs consumed by 200+ engineers, and partnering with security/compliance on SOC2-ready delivery. Seeking roles where platform reliability, developer velocity, and inclusive engineering culture are first-class priorities. Additional line to test summary wrap and page flow without clipping.",
+  "skills": "Languages: TypeScript, JavaScript, Python, Go, Rust, Java, SQL, Bash\nFrontend: React, Next.js, Vue, design systems, accessibility (WCAG 2.2), performance budgets\nBackend: Node.js, gRPC, GraphQL, REST, event-driven architecture, CQRS, saga patterns\nData: PostgreSQL, MySQL, Redis, MongoDB, DynamoDB, ClickHouse, data modeling, query tuning\nCloud: AWS (EKS, Lambda, RDS, S3, CloudFront), GCP, Terraform, Pulumi, Kubernetes, Helm\nDevOps: CI/CD, GitHub Actions, GitLab, Jenkins, Argo CD, Docker, observability, OpenTelemetry\nSecurity: OAuth2/OIDC, mTLS, secrets management, threat modeling, dependency scanning\nLeadership: mentoring, hiring loops, RFC review, stakeholder management, roadmap planning\nPractices: Agile, Scrum, Kanban, DORA metrics, SRE, incident command, postmortems, SLA/SLO/SLI",
+  "experience": [
+    {
+      "company": "Northwind Global Enterprise Systems GmbH — Platform Engineering Division",
+      "role": "Staff / Principal Software Engineer",
+      "start": "2021-03",
+      "end": "Present",
+      "bullets": [
+        "Owned internal developer platform serving 220+ engineers across 40 product squads; cut median build times by 38% and deployment frequency up 2.1×.",
+        "Led migration from monolithic release train to trunk-based delivery with automated canary analysis and rollback playbooks adopted org-wide.",
+        "Designed multi-tenant observability stack (OpenTelemetry, Prometheus, Grafana) reducing MTTR from 94m to 41m over 12 months.",
+        "Partnered with security on zero-trust service mesh rollout; zero critical findings in external penetration test after remediation sprint."
+      ]
+    },
+    {
+      "company": "Contoso Logistics International",
+      "role": "Senior Software Engineer II",
+      "start": "2018-06",
+      "end": "2021-02",
+      "bullets": [
+        "Built real-time shipment tracking API handling 12k RPS peak with PostgreSQL read replicas and Redis caching layer.",
+        "Introduced contract testing (Pact) between 18 services; reduced integration regressions in QA by 55%.",
+        "Mentored 6 engineers through promotion cycles; established guild for backend best practices and on-call hygiene."
+      ]
+    },
+    {
+      "company": "Fabrikam Payments AG",
+      "role": "Software Engineer",
+      "start": "2015-01",
+      "end": "2018-05",
+      "bullets": [
+        "Implemented PCI-scoped payment reconciliation pipeline processing 2M+ transactions daily with idempotent workers.",
+        "Migrated reporting warehouse from batch ETL to streaming aggregates (Kafka + Flink prototype).",
+        "On-call rotation lead for tier-1 payment APIs; authored runbooks still referenced by operations."
+      ]
+    },
+    {
+      "company": "Adventure Works Digital Studio",
+      "role": "Full-Stack Developer",
+      "start": "2012-08",
+      "end": "2014-12",
+      "bullets": [
+        "Delivered customer portal in React/Node serving 500k MAU with A/B experimentation framework.",
+        "Optimized Core Web Vitals: LCP 4.2s → 2.1s via image CDN, code splitting, and server-side caching."
+      ]
+    },
+    {
+      "company": "Wide World Importers — Graduate Program",
+      "role": "Junior Developer",
+      "start": "2010-07",
+      "end": "2012-07",
+      "bullets": [
+        "Maintained legacy .NET MVC modules while incrementally extracting bounded contexts into microservices.",
+        "Automated regression suite expansion; increased coverage from 42% to 71% in 10 months."
+      ]
+    },
+    {
+      "company": "Tailspin Toys R&D Lab",
+      "role": "Intern → Associate Engineer",
+      "start": "2009-01",
+      "end": "2010-06",
+      "bullets": [
+        "Prototyped IoT inventory sensors and dashboard; presented findings to leadership for pilot funding."
+      ]
+    },
+    {
+      "company": "Consolidated Messenger Co-op",
+      "role": "Contract Engineer",
+      "start": "2008-03",
+      "end": "2008-12",
+      "bullets": [
+        "Short-term contract: routing optimization script reducing fuel estimates 7% on regional fleet pilot."
+      ]
+    },
+    {
+      "company": "University Research Lab — Part Time",
+      "role": "Research Assistant",
+      "start": "2007-09",
+      "end": "2008-02",
+      "bullets": [
+        "Supported statistical analysis pipelines in R and Python for HCI studies; co-authored workshop paper."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Open Metrics Kit — Community Observability SDK",
+      "context": "Open-source · Maintainer",
+      "start": "2022",
+      "end": "2025",
+      "bullets": [
+        "1.4k GitHub stars; plugins for Node, Go, and browser RUM with exemplar-based tracing.",
+        "Adopted by 3 partner companies; monthly downloads 80k+ on npm.",
+        "Led semver policy, security disclosures, and contributor onboarding docs."
+      ]
+    },
+    {
+      "name": "Resume Schema Interop Working Group",
+      "context": "Industry volunteer",
+      "start": "2023",
+      "end": "2024",
+      "bullets": [
+        "Drafted JSON schema for portable CV data exchange between ATS vendors (draft spec v0.3)."
+      ]
+    },
+    {
+      "name": "HackWeek — AI-Assisted Incident Summaries",
+      "context": "Internal innovation week winner",
+      "start": "2024",
+      "end": "2024",
+      "bullets": [
+        "Built prototype summarizing PagerDuty timelines into postmortem drafts; piloted with SRE team."
+      ]
+    },
+    {
+      "name": "Green Cloud Cost Dashboard",
+      "context": "Sustainability initiative",
+      "start": "2021",
+      "end": "2022",
+      "bullets": [
+        "Attributed AWS spend to services/teams; identified idle resources saving €120k annually."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "school": "Technical University of Munich — Department of Informatics",
+      "degree": "M.Sc. Computer Science (Distributed Systems)",
+      "start": "2010",
+      "end": "2012"
+    },
+    {
+      "school": "University of Applied Sciences Berlin",
+      "degree": "B.Sc. Software Engineering",
+      "start": "2006",
+      "end": "2010"
+    }
+  ],
+  "certifications": "AWS Solutions Architect – Professional (2024)\nCertified Kubernetes Administrator (CKA, 2023)\nProfessional Scrum Master I (PSM I, 2020)",
+  "languages": "English (fluent, professional) · German (professional working) · French (intermediate) · Bengali (native)"
+}

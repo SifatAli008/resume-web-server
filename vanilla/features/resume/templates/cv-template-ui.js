@@ -48,12 +48,4 @@ export function sectionIconFor(title) {
   return SECTION_ICON_BY_TITLE[title] || "list";
 }
 
-/** @deprecated use getTemplateUi */
-export const TEMPLATE_UI = Object.fromEntries(
-  Array.from({ length: 20 }, (_, i) => {
-    const n = i + 1;
-    return [n, getTemplateUi(n)];
-  }),
-);
-
 export { SECTION_ICON_BY_TITLE };

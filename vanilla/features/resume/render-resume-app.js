@@ -2,19 +2,25 @@ import {
   DEFAULT_RESUME_TEMPLATE_ID,
   RESUME_TEMPLATES,
   isKnownResumeTemplateId,
+  normalizeTemplateId,
 } from "./constants.js";
 import { defaultResumeDraft, loadResumeDraft, normalizeResumeDraft, saveResumeDraft } from "./draft.js";
 import { applyTemplatePhotoDefaults } from "./templates/cv-defaults.js";
 import { escapeHtml } from "./escape-html.js";
 import { mountResumeEditablePreview } from "./editable-resume-preview.js";
 
-export function mountResumeApp(app) {
+export async function mountResumeApp(app, options = {}) {
+  const { initialDraft, pathTemplateId, persistDraft = true } = options;
   const params = new URLSearchParams(window.location.search);
-  const fromUrl = params.get("template");
-  let draft = normalizeResumeDraft(loadResumeDraft());
+  const fromUrl = params.get("template") || pathTemplateId;
+
+  let draft = initialDraft
+    ? normalizeResumeDraft(initialDraft)
+    : normalizeResumeDraft(loadResumeDraft());
+
   if (fromUrl && isKnownResumeTemplateId(fromUrl)) {
-    draft = normalizeResumeDraft({ ...draft, templateId: fromUrl });
-    saveResumeDraft(draft);
+    draft = normalizeResumeDraft({ ...draft, templateId: normalizeTemplateId(fromUrl) });
+    if (persistDraft) saveResumeDraft(draft);
   }
   draft = applyTemplatePhotoDefaults(draft, draft.templateId, "load");
 
@@ -24,41 +30,34 @@ export function mountResumeApp(app) {
     <div class="print:hidden mb-4 flex flex-wrap items-center justify-between gap-4">
       <div>
         <h1 class="text-2xl font-bold tracking-tight text-zinc-900">Resume builder</h1>
-        <p class="mt-1 max-w-xl text-sm text-zinc-600">International 3-page A4 CV — 20 unique designs. Edit placeholders below; print to PDF for applications.</p>
+        <p class="mt-1 max-w-xl text-sm text-zinc-600">Edit your resume below, then print to PDF.</p>
       </div>
       <div class="flex flex-wrap items-center gap-2">
         <label class="sr-only" for="rf-template">Template</label>
-        <select id="rf-template" class="max-h-60 min-w-[min(100%,18rem)] max-w-xs overflow-y-auto scrollbar-none rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-800 shadow-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900/20">
+        <select id="rf-template" class="max-h-60 min-w-[min(100%,18rem)] max-w-xs overflow-y-auto rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-800 shadow-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900/20">
           ${RESUME_TEMPLATES.map(
-            (t) =>
-              `<option value="${escapeHtml(t.id)}">${escapeHtml(t.label)} — ${escapeHtml(t.description)}</option>`,
+            (t) => `<option value="${escapeHtml(t.id)}">${escapeHtml(t.label)}</option>`,
           ).join("")}
         </select>
-        <a href="/" class="rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-800 hover:bg-zinc-50">Home</a>
-        <button type="button" id="resume-print-btn" class="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800">Print / Save PDF</button>
-        <button type="button" id="resume-reset-btn" class="rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-800 hover:bg-zinc-50">Reset</button>
+        <a href="/" class="rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-800 hover:bg-zinc-50">Home</a>
+        <button type="button" id="resume-print-btn" class="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800">Print / Save PDF</button>
+        <button type="button" id="resume-reset-btn" class="rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-800 hover:bg-zinc-50">Reset</button>
       </div>
     </div>
-    <div class="lg:sticky lg:top-6 lg:self-start">
-      <p class="print:hidden mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">Template & edit</p>
-      <div id="rf-preview-shell" class="overflow-x-hidden rounded-xl border border-zinc-200 bg-white p-4 shadow-md sm:p-6 print:border-0 print:shadow-none print:p-0">
-        <div id="rf-preview"></div>
-      </div>
+    <div id="rf-preview-shell" class="overflow-x-auto rounded-xl border border-zinc-200 bg-zinc-200/80 p-3 shadow-md sm:p-4 print:border-0 print:bg-white print:p-0 print:shadow-none">
+      <div id="rf-preview" class="mx-auto max-w-[210mm]"></div>
     </div>
   `;
   app.appendChild(root);
 
   const previewEl = root.querySelector("#rf-preview");
 
-  function setDraft(fn) {
-    draft = fn(draft);
-  }
-
-  const editable = mountResumeEditablePreview(previewEl, {
+  const editable = await mountResumeEditablePreview(previewEl, {
     getDraft: () => draft,
-    setDraft,
-    onPersist: () => saveResumeDraft(draft),
-    getTemplateId: () => draft.templateId,
+    onDraftChange: (next) => {
+      draft = normalizeResumeDraft(next);
+      if (persistDraft) saveResumeDraft(draft);
+    },
   });
 
   const templateSelect = root.querySelector("#rf-template");
@@ -78,8 +77,10 @@ export function mountResumeApp(app) {
     const id = draft.templateId;
     const url = new URL(window.location.href);
     if (isKnownResumeTemplateId(id) && id !== DEFAULT_RESUME_TEMPLATE_ID) {
-      url.searchParams.set("template", id);
+      url.pathname = `/resume/${id}`;
+      url.searchParams.delete("template");
     } else {
+      url.pathname = "/resume";
       url.searchParams.delete("template");
     }
     window.history.replaceState({}, "", url.pathname + url.search + url.hash);

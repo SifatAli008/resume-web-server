@@ -3,12 +3,39 @@
   margin: 0;
 }
 
+/* —— Design system: print-first, no motion —— */
+#resume-print-root,
+#resume-print-root * {
+  transition: none !important;
+  animation: none !important;
+}
+
 .resume-preview-article,
 .cv-document {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 10.5pt;
   line-height: 1.45;
   color: #18181b;
+}
+
+.cv-section-h2,
+.cv-section-h2 + .cv-section-ruled,
+h3 {
+  page-break-after: avoid;
+  break-after: avoid-page;
+}
+
+.cv-date-col {
+  width: 7rem;
+  max-width: 7rem;
+  flex-shrink: 0;
+}
+
+.cv-name-emphasis {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
 }
 
 /* —— 20 unique font personalities —— */
@@ -49,6 +76,10 @@
   box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
 }
 
+.cv-page-padding-formal {
+  padding: 15mm 17mm 16mm;
+}
+
 .cv-page-body { flex: 1; }
 .cv-avoid-break { break-inside: avoid; page-break-inside: avoid; }
 .cv-page-footer { display: none !important; }
@@ -68,14 +99,102 @@
 .cv-skill-chip { break-inside: avoid; }
 
 @media print {
-  body { background: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  #app { padding-top: 0 !important; padding-bottom: 0 !important; }
-  .resume-preview-article, .cv-document { max-width: none !important; box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; }
-  .cv-page { width: auto; min-height: auto; margin: 0; padding: 14mm 16mm 16mm; box-shadow: none; break-after: page; page-break-after: always; }
-  .cv-page:last-child { break-after: auto; page-break-after: auto; }
-  #resume-print-root input, #resume-print-root textarea { border: none !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; outline: none !important; }
-  #resume-print-root input::placeholder, #resume-print-root textarea::placeholder { color: transparent !important; }
-  .print\:hidden { display: none !important; }
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  body {
+    background: #fff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  #app {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .resume-preview-article,
+  .cv-document {
+    max-width: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .cv-page {
+    width: auto;
+    min-height: auto;
+    margin: 0;
+    padding: 14mm 16mm 16mm;
+    box-shadow: none !important;
+    outline: none !important;
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .cv-tpl-2 .cv-page,
+  .cv-tpl-7 .cv-page,
+  .cv-tpl-8 .cv-page,
+  .cv-tpl-20 .cv-page {
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  .cv-page-padding-formal {
+    padding: 15mm 17mm 16mm !important;
+  }
+
+  .cv-page:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+
+  .cv-exp-row,
+  .cv-exp-table-row,
+  .cv-edu-row,
+  .cv-proj-row,
+  .cv-avoid-break {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .cv-sidebar {
+    min-width: 11rem;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .cv-tpl-2 .cv-sidebar { background: #0a0a0a !important; }
+  .cv-tpl-7 .cv-sidebar { background: #042f2e !important; }
+  .cv-tpl-10 .cv-sidebar { background: #0f172a !important; }
+  .cv-tpl-14 .cv-sidebar { background: #020617 !important; }
+  .cv-tpl-20 .cv-sidebar { background: #4c0519 !important; }
+
+  .no-print,
+  .builder-ui,
+  .photo-edit-bar,
+  .cv-photo-editor,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  #resume-print-root input,
+  #resume-print-root textarea {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    outline: none !important;
+  }
+
+  #resume-print-root input::placeholder,
+  #resume-print-root textarea::placeholder {
+    color: transparent !important;
+  }
 }
 
 /* —— Template 1–20: color, page frame, sidebar —— */
@@ -86,13 +205,16 @@
 .cv-tpl-2 .cv-page { box-shadow: 0 4px 16px rgb(16 185 129 / 0.15); }
 
 .cv-tpl-3 .cv-page { border-top: 4px solid #f59e0b; }
-.cv-tpl-3 .cv-rail-zurich { background: #fffbeb !important; }
+.cv-tpl-3 .cv-rail-zurich,
+.cv-tpl-3 .cv-rail-split { background: #fffbeb !important; border-color: #fde68a !important; }
+.cv-tpl-3 .cv-split-grid { align-items: stretch; }
+.cv-tpl-3 .cv-header-compact { border-bottom-color: #fde68a; }
 
 .cv-tpl-4.cv-font-oxford .cv-page { border: 2px solid #c7d2fe; background: #fafaff; }
 .cv-tpl-4 .cv-page [class*="bg-indigo-900"] { background: #312e81 !important; }
 
-.cv-tpl-5 .cv-page-body { border-left: 4px solid #8b5cf6; padding-left: 1rem; }
-.cv-tpl-5 .cv-timeline-kyoto { --cv-tl: #8b5cf6; }
+.cv-tpl-5 .cv-timeline-accent,
+.cv-tpl-5 .cv-page-body .cv-timeline-accent { border-left-width: 4px; border-left-color: #8b5cf6; padding-left: 1rem; }
 
 .cv-tpl-6 .cv-page { background: linear-gradient(165deg, #faf5ff 0%, #fff 50%); }
 .cv-tpl-6 .cv-page:nth-child(2) { background: linear-gradient(165deg, #fff 0%, #f5f3ff 100%); }
@@ -101,10 +223,14 @@
 .cv-tpl-7 .cv-page { box-shadow: inset 0 0 0 1px rgb(20 184 166 / 0.2); }
 
 .cv-tpl-8 .cv-page { outline: 2px solid #6ee7b7; outline-offset: -3px; }
-.cv-tpl-8 .cv-band-berlin h2 { letter-spacing: 0.18em; }
+.cv-tpl-8 .cv-layout-bands .cv-band-berlin h2,
+.cv-tpl-8 [class*="bg-emerald-700"] h2 { letter-spacing: 0.18em; }
+.cv-tpl-8 .cv-name-emphasis { letter-spacing: -0.02em; }
 
 .cv-tpl-9 .cv-page:first-child { padding-top: 10mm; }
-.cv-tpl-9 .cv-banner-manhattan + header input { color: #fff; }
+.cv-tpl-9 .cv-banner-strip { letter-spacing: 0.02em; }
+.cv-tpl-9 .cv-header-banner .cv-name-emphasis { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.025em; }
+.cv-tpl-9 .cv-layout-banner .cv-exp-row { border-color: rgb(228 228 231 / 0.9); }
 
 .cv-tpl-10 .cv-sidebar { background: linear-gradient(180deg, #0f172a 0%, #0c4a6e 100%) !important; }
 .cv-tpl-10 .cv-page { border-right: 3px solid #0ea5e9; }
@@ -112,7 +238,7 @@
 .cv-tpl-11.cv-font-montreal .cv-page { border: 1px solid #ddd6fe; background: #faf5ff; }
 .cv-tpl-11 .cv-rail-montreal { background: #f5f3ff !important; }
 
-.cv-tpl-12.cv-font-cambridge .cv-page { border: 2px double #a1a1aa; padding: 15mm 17mm; }
+.cv-tpl-12.cv-font-cambridge .cv-page { border: 2px double #a1a1aa; }
 .cv-tpl-12 .cv-double-cambridge h2 { font-variant: small-caps; }
 
 .cv-tpl-13 .cv-page { border-left: 6px solid #f43f5e; background: linear-gradient(90deg, #fff1f2 0%, #fff 12%); }
@@ -137,3 +263,52 @@
 
 .cv-tpl-20 .cv-sidebar { background: linear-gradient(180deg, #4c0519 0%, #9f1239 100%) !important; }
 .cv-tpl-20 .cv-page { box-shadow: 0 0 0 1px rgb(190 18 60 / 0.25); }
+
+/* Embed modes */
+html[data-embed-pdf] body,
+html[data-embed-thumb] body {
+  background: #fff !important;
+  margin: 0;
+  padding: 0;
+}
+html[data-embed-pdf] #app,
+html[data-embed-thumb] #app {
+  padding: 0 !important;
+  max-width: none;
+}
+html[data-embed-pdf] .cv-photo-editor,
+html[data-embed-thumb] .cv-photo-editor {
+  display: none !important;
+}
+html[data-embed-app] body {
+  background: #f4f4f5;
+}
+html[data-embed-app] .print\:hidden {
+  display: none !important;
+}
+
+/* Invoice-style page shell (matches invoice-web-server template URLs) */
+.rf-invoice-page {
+  background: transparent;
+}
+.rf-invoice-shell .cv-document {
+  margin-left: auto;
+  margin-right: auto;
+}
+.cv-layout-invoice .cv-meta-row input {
+  font-size: 12px;
+}
+.cv-layout-invoice .cv-exp-table th,
+.cv-layout-invoice .cv-exp-table td {
+  vertical-align: top;
+}
+.cv-layout-invoice .cv-exp-table thead th {
+  background: rgb(248 250 252);
+}
+.cv-tpl-10.cv-layout-invoice .cv-bill-to {
+  border-left: 1px solid rgb(255 255 255 / 0.12);
+}
+@media print {
+  .rf-invoice-page { padding: 0 !important; }
+  .rf-invoice-shell { border: none !important; box-shadow: none !important; }
+}

@@ -1,7 +1,16 @@
 import { CV_PH } from "./cv-placeholders.js";
 import { escapeHtml } from "../escape-html.js";
 import { resumeIcon } from "../resume-icons.js";
-import { skillBarPct } from "./resume-professional-parts.js";
+
+/** Deterministic proficiency width for skill bars (no random). */
+export function skillBarPct(label, min = 52, max = 94) {
+  let h = 0;
+  const s = String(label ?? "");
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  const span = Math.max(1, max - min + 1);
+  const pct = min + (Math.abs(h) % span);
+  return Number.isFinite(pct) ? Math.min(100, Math.max(0, pct)) : min;
+}
 
 /** One visual style per template (1–20). */
 export const SKILLS_STYLE_BY_TEMPLATE = [
@@ -150,13 +159,13 @@ function renderEmpty(ui, dark) {
 
 function renderPills(flat, ui, dark) {
   const a = accent(ui, dark);
-  const pill = `${a.pill} rounded-full px-2.5 py-1 text-[11px] font-medium`;
+  const pill = `${a.pill} rounded-full px-2.5 py-0.5 text-[11px] font-medium`;
   return `<div class="flex flex-wrap gap-2">${flat.map((n) => itemChip(n, ui, dark, pill)).join("")}</div>`;
 }
 
 function renderOutline(flat, ui) {
   const ic = ui.iconContact || "text-indigo-600";
-  const pill = `rounded-md border-2 border-current/20 bg-white px-2.5 py-1 text-[11px] font-semibold text-zinc-800`;
+  const pill = `ring-1 ring-current rounded px-2 py-0.5 text-[11px] font-medium text-zinc-800`;
   return `<div class="flex flex-wrap gap-2">${flat.map((n) => itemChip(n, { ...ui, iconContact: ic }, false, pill)).join("")}</div>`;
 }
 
@@ -174,7 +183,7 @@ function renderGrouped(groups, ui, dark) {
 }
 
 function renderGrid(flat, ui) {
-  return `<div class="grid grid-cols-2 gap-2 sm:grid-cols-3">${flat
+  return `<div class="grid grid-cols-2 gap-2 [grid-template-columns:repeat(auto-fill,minmax(8rem,1fr))]">${flat
     .map((n) => {
       const { icon, cls } = skillMeta(n, ui.iconContact);
       return `<div class="flex items-center gap-2 rounded-lg border border-violet-100 bg-violet-50/50 px-2.5 py-2">
@@ -214,7 +223,7 @@ function renderBars(flat, ui, dark) {
           ${resumeIcon(icon, `h-3.5 w-3.5 ${cls}`)}
           <span class="text-[11px] font-medium ${dark ? "text-zinc-200" : "text-zinc-800"}">${escapeHtml(n)}</span>
         </div>
-        <div class="h-1.5 overflow-hidden rounded-full ${a.bar}"><div class="h-full rounded-full ${a.barFill}" style="width:${pct}%"></div></div>
+        <div class="h-1.5 w-[100px] max-w-full overflow-hidden rounded-full ${a.bar}"><div class="h-full rounded-full ${a.barFill}" style="width:${pct}%"></div></div>
       </div>`;
     })
     .join("")}</div>`;
@@ -238,28 +247,23 @@ function renderTagsBand(groups, ui) {
     .join("");
 }
 
-function renderMinimalRow(flat, ui) {
-  return `<ul class="space-y-1">${flat
-    .map((n) => {
-      const { icon, cls } = skillMeta(n, "text-zinc-600");
-      return `<li class="flex items-center gap-2 text-[12px] text-zinc-800"><span class="w-4 shrink-0">${resumeIcon(icon, `h-3.5 w-3.5 ${cls}`)}</span>${escapeHtml(n)}</li>`;
-    })
-    .join("")}</ul>`;
+function renderMinimalRow(flat) {
+  return `<p class="text-[12px] leading-relaxed text-[#18181b]">${flat.map((n) => escapeHtml(n)).join(", ")}</p>`;
 }
 
 function renderSkyChips(flat) {
   return `<div class="flex flex-wrap gap-1.5">${flat
-    .map((n) => {
-      const { icon, cls } = skillMeta(n, "text-sky-600");
-      return `<span class="inline-flex items-center gap-1 rounded-full bg-sky-100 px-2.5 py-1 text-[10px] font-semibold text-sky-950">${resumeIcon(icon, `h-3 w-3 ${cls}`)}${escapeHtml(n)}</span>`;
-    })
+    .map(
+      (n) =>
+        `<span class="rounded bg-sky-100 px-2.5 py-0.5 text-[11px] font-medium text-sky-800">${escapeHtml(n)}</span>`,
+    )
     .join("")}</div>`;
 }
 
 function renderSerifBlocks(groups, ui) {
-  return `<div class="space-y-4 font-serif">${groups
+  return `<div class="space-y-3 font-serif">${groups
     .map(
-      (g) => `<div class="border-l-2 border-violet-300 pl-3">
+      (g) => `<div class="border-b border-violet-200 pb-2">
       ${g.label ? `<p class="text-[11px] font-bold text-violet-900">${escapeHtml(g.label)}</p>` : ""}
       <p class="mt-1 text-[12px] leading-relaxed text-zinc-700">${g.items.map((n) => escapeHtml(n)).join('<span class="text-violet-300 mx-1.5">·</span>')}</p>
     </div>`,
@@ -268,31 +272,25 @@ function renderSerifBlocks(groups, ui) {
 }
 
 function renderSlateList(flat) {
-  return `<div class="columns-2 gap-4 text-[12px] leading-relaxed text-zinc-700">${flat
-    .map((n) => {
-      const { icon, cls } = skillMeta(n, "text-slate-600");
-      return `<p class="mb-1.5 flex break-inside-avoid items-start gap-2"><span class="mt-0.5">${resumeIcon(icon, `h-3.5 w-3.5 ${cls}`)}</span>${escapeHtml(n)}</p>`;
-    })
-    .join("")}</div>`;
+  return `<ul class="list-disc space-y-1 pl-4 text-[12px] text-slate-600">${flat
+    .map((n) => `<li class="break-inside-avoid">${escapeHtml(n)}</li>`)
+    .join("")}</ul>`;
 }
 
 function renderRoseTiles(flat) {
   return `<div class="grid grid-cols-2 gap-2">${flat
-    .map((n) => {
-      const { icon, cls } = skillMeta(n, "text-rose-600");
-      return `<div class="flex items-center gap-2 rounded border-l-4 border-rose-500 bg-rose-50 px-2 py-1.5">
-        ${resumeIcon(icon, `h-4 w-4 ${cls}`)}
-        <span class="text-[11px] font-medium text-rose-950">${escapeHtml(n)}</span>
-      </div>`;
-    })
+    .map(
+      (n) =>
+        `<div class="rounded border border-rose-200 bg-rose-50 px-2 py-1.5 text-[11px] font-medium text-rose-950">${escapeHtml(n)}</div>`,
+    )
     .join("")}</div>`;
 }
 
 function renderCompactDark(flat) {
-  return `<div class="flex flex-wrap gap-1">${flat
+  return `<div class="flex flex-wrap gap-1.5">${flat
     .map(
       (n) =>
-        `<span class="rounded bg-white/10 px-1.5 py-0.5 text-[10px] text-zinc-200">${escapeHtml(n)}</span>`,
+        `<span class="rounded-full bg-zinc-700 px-2.5 py-0.5 text-[10px] font-medium text-zinc-100">${escapeHtml(n)}</span>`,
     )
     .join("")}</div>`;
 }
@@ -315,16 +313,15 @@ function renderCyanStack(groups) {
 }
 
 function renderSwissDense(flat) {
-  return `<div class="flex flex-wrap gap-x-3 gap-y-1">${flat
-    .map((n) => {
-      const { icon, cls } = skillMeta(n, "text-orange-600");
-      return `<span class="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wide text-zinc-900">${resumeIcon(icon, `h-3 w-3 ${cls}`)}${escapeHtml(n)}</span>`;
-    })
-    .join("")}</div>`;
+  return `<p class="font-mono text-[11px] leading-snug text-zinc-900">${flat.map((n) => escapeHtml(n)).join(" · ")}</p>`;
 }
 
 function renderAcademic(groups) {
-  return renderGrouped(groups, { iconContact: "text-teal-700", h2: "text-teal-900" }, false);
+  const items = groups.flatMap((g) => g.items);
+  if (!items.length) return renderEmpty({ iconContact: "text-teal-700" }, false);
+  return `<ol class="list-decimal space-y-1 pl-5 font-serif text-[12px] text-zinc-800">${items
+    .map((n) => `<li class="break-inside-avoid pl-1">${escapeHtml(n)}</li>`)
+    .join("")}</ol>`;
 }
 
 function renderMagazineCols(groups) {

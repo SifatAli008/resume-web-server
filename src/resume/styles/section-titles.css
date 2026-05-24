@@ -1,0 +1,52 @@
+#resume-print-root.cv-v2 .cv-sec-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+#resume-print-root.cv-v2 .cv-sec-ruled .cv-sec-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--cv-bdr-m);
+  margin-left: 0.25rem;
+}
+
+#resume-print-root.cv-v2 .cv-sec-minimal {
+  gap: 0;
+}
+#resume-print-root.cv-v2 .cv-sec-minimal span {
+  font-weight: 600;
+  letter-spacing: 0.2em;
+}
+
+#resume-print-root.cv-v2 .cv-sec-boxed span {
+  border-left: 3px solid var(--cv-a500);
+  padding-left: 0.75rem;
+  font-weight: 700;
+  width: 100%;
+}
+
+#resume-print-root.cv-v2 .cv-sec-band {
+  background: var(--cv-a100);
+  padding: 0.4rem 0.65rem;
+  width: 100%;
+  margin-left: 0;
+  border-radius: 2px;
+}
+#resume-print-root.cv-v2 .cv-sec-band span {
+  font-weight: 700;
+}
+
+#resume-print-root.cv-v2 .cv-sec-double {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+#resume-print-root.cv-v2 .cv-sec-double span {
+  display: block;
+  border-top: 1px solid var(--cv-bdr-s);
+  border-bottom: 1px solid var(--cv-bdr-s);
+  padding: 0.45rem 0;
+  font-weight: 600;
+  width: 100%;
+}

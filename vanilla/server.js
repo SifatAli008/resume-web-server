@@ -1,7 +1,9 @@
 import http from "node:http";
 import { readFile } from "node:fs/promises";
+import { access } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { dispatchResumeRender, isResumeRenderPath } from "./lib/resume-render-handlers.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,6 +13,7 @@ const port = Number(process.env.PORT || 3000);
 const mime = {
   ".html": "text/html; charset=utf-8",
   ".js": "application/javascript; charset=utf-8",
+  ".mjs": "application/javascript; charset=utf-8",
   ".css": "text/css; charset=utf-8",
   ".json": "application/json; charset=utf-8",
   ".png": "image/png",
@@ -35,10 +38,22 @@ async function serveFile(res, absolutePath) {
 const server = http.createServer(async (req, res) => {
   try {
     const rawUrl = req.url || "/";
-    const urlPath = new URL(rawUrl, `http://${req.headers.host}`).pathname;
+    const url = new URL(rawUrl, `http://${req.headers.host}`);
+    const urlPath = url.pathname;
+
+    if (isResumeRenderPath(urlPath)) {
+      await dispatchResumeRender(req, res, urlPath);
+      return;
+    }
 
     if (shouldServeApp(urlPath)) {
       await serveFile(res, path.join(root, "index.html"));
+      return;
+    }
+
+    if (urlPath === "/favicon.ico") {
+      res.writeHead(204);
+      res.end();
       return;
     }
 
@@ -49,13 +64,25 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    try {
+      await access(localPath);
+    } catch {
+      res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+      res.end("Not Found");
+      return;
+    }
+
     await serveFile(res, localPath);
-  } catch {
-    res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
-    res.end("Not Found");
+  } catch (err) {
+    console.error(err);
+    res.writeHead(500, { "Content-Type": "text/plain; charset=utf-8" });
+    res.end("Internal Server Error");
   }
 });
 
 server.listen(port, () => {
-  console.log(`Vanilla app running at http://localhost:${port}`);
+  console.log(`Resume web server at http://localhost:${port}`);
+  console.log(`  Builder:  GET /resume`);
+  console.log(`  Static:   POST /render/resume/{templateId}/static`);
+  console.log(`  PDF:      POST /render/resume/{templateId}/pdf`);
 });

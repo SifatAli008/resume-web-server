@@ -2,7 +2,21 @@
   "framework": null,
   "buildCommand": "npm install && npm run build",
   "outputDirectory": "vanilla",
+  "functions": {
+    "api/render-resume-pdf.js": {
+      "maxDuration": 60,
+      "memory": 1024
+    }
+  },
   "rewrites": [
+    {
+      "source": "/render/resume/:templateId/pdf",
+      "destination": "/api/render-resume-pdf?templateId=:templateId"
+    },
+    {
+      "source": "/render/resume/:templateId/static",
+      "destination": "/api/render-resume-static?templateId=:templateId"
+    },
     {
       "source": "/resume",
       "destination": "/index.html"

@@ -1,4 +1,8 @@
-import { DEFAULT_RESUME_TEMPLATE_ID, isKnownResumeTemplateId } from "./constants.js";
+import {
+  DEFAULT_RESUME_TEMPLATE_ID,
+  isKnownResumeTemplateId,
+  normalizeTemplateId,
+} from "./constants.js";
 import { CV_PH } from "./templates/cv-placeholders.js";
 
 const STORAGE_KEY = "resume-web-server:draft:v3";
@@ -92,16 +96,12 @@ export function normalizeResumeDraft(raw) {
   const d = defaultResumeDraft();
   if (!raw || typeof raw !== "object") return d;
 
-  const legacy = {
-    resume_classic: "resume_fluvo_1",
-    resume_sidebar: "resume_fluvo_2",
-    resume_minimal: "resume_fluvo_3",
-  };
-
   let templateId = typeof raw.templateId === "string" ? raw.templateId : "";
-  if (legacy[templateId]) templateId = legacy[templateId];
+  templateId = normalizeTemplateId(templateId);
 
-  const tid = isKnownResumeTemplateId(templateId) ? templateId : DEFAULT_RESUME_TEMPLATE_ID;
+  const tid = isKnownResumeTemplateId(templateId)
+    ? normalizeTemplateId(templateId)
+    : DEFAULT_RESUME_TEMPLATE_ID;
   return {
     templateId: tid,
     fullName: typeof raw.fullName === "string" ? raw.fullName : d.fullName,

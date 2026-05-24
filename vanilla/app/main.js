@@ -1,4 +1,4 @@
-import { mountResumeApp } from "../features/resume/render-resume-app.js";
+import { bootstrapResumeDraftFromUrl, mountResumeView } from "../features/resume/mount-resume-view.js";
 
 function routeKind() {
   const path = window.location.pathname.replace(/\/$/, "") || "/";
@@ -14,11 +14,9 @@ function renderHome(app) {
       <p class="mt-2 text-sm leading-relaxed text-zinc-600">
         Build a resume in the browser, keep a local draft, and export with your system print dialog (Save as PDF).
       </p>
-      <ul class="mt-8 space-y-3">
-        <li>
-          <a class="block rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm font-semibold text-zinc-900 hover:bg-zinc-100" href="/resume">Resume builder →</a>
-        </li>
-      </ul>
+      <div class="mt-8">
+        <a class="rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-2.5 text-sm font-semibold text-zinc-900 hover:bg-zinc-100" href="/resume">Open resume builder</a>
+      </div>
     </div>
   `;
 }
@@ -35,8 +33,8 @@ function render() {
     return;
   }
 
-  document.title = "Resume builder · Resume Web Server";
-  mountResumeApp(app);
+  bootstrapResumeDraftFromUrl();
+  mountResumeView(app);
 }
 
 render();

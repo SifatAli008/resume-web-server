@@ -2,98 +2,82 @@ import {
   buildEditableMultipageCv,
   readEditableMultipageDraft,
 } from "./templates/cv-editable-multipage.js";
-import { refreshSkillsPreviews } from "./templates/cv-skills-ui.js";
-import { getTemplateUi } from "./templates/cv-template-ui.js";
-import { normalizeResumeDraft } from "./draft.js";
+import { normalizeTemplateId } from "./constants.js";
+import { CV_PH } from "./templates/cv-placeholders.js";
 
-export function buildEditableResumeHtml(draft, templateId) {
-  return buildEditableMultipageCv(draft, templateId);
+function fillDraftPlaceholders(draft) {
+  const fill = (v, ph) => (String(v || "").trim() ? v : ph);
+  return {
+    ...draft,
+    fullName: fill(draft.fullName, CV_PH.fullName),
+    title: fill(draft.title, CV_PH.title),
+    email: fill(draft.email, CV_PH.email),
+    phone: fill(draft.phone, CV_PH.phone),
+    location: fill(draft.location, CV_PH.location),
+    summary: fill(draft.summary, CV_PH.summary),
+    certifications: fill(draft.certifications, CV_PH.certifications),
+    languages: fill(draft.languages, CV_PH.languages),
+    skills: fill(draft.skills, CV_PH.skills),
+  };
+}
+
+export function buildEditableResumeHtml(draft) {
+  const id = normalizeTemplateId(draft.templateId);
+  return buildEditableMultipageCv(fillDraftPlaceholders(draft), id);
 }
 
 export function readEditableDraftFromRoot(root, templateId) {
-  return readEditableMultipageDraft(root, templateId);
+  return readEditableMultipageDraft(root, normalizeTemplateId(templateId));
 }
 
-export function mountResumeEditablePreview(host, ctx) {
-  const { getDraft, setDraft, onPersist, getTemplateId } = ctx;
+export async function mountResumeEditablePreview(previewEl, ctx) {
+  const { getDraft, onDraftChange } = ctx;
 
-  function remount() {
-    host.innerHTML = buildEditableResumeHtml(getDraft(), getTemplateId());
-  }
-
-  function onInput(e) {
-    const next = readEditableDraftFromRoot(host, getTemplateId());
-    setDraft(() => next);
-    const article = host.querySelector("#resume-print-root");
-    if (article) {
-      article.classList.toggle("cv-has-photo", Boolean(next.showPhoto));
-      article.classList.toggle("cv-no-photo", !next.showPhoto);
-    }
-    if (e?.target?.matches?.('[data-f="skills"]')) {
-      refreshSkillsPreviews(host, next, getTemplateUi);
-    }
-    onPersist();
-  }
-
-  function onClick(e) {
-    const t = e.target.closest("[data-action]");
-    if (!t) return;
+  function paint() {
     const draft = getDraft();
-    const action = t.getAttribute("data-action");
-    if (action === "add-exp") {
-      draft.experience.push({ company: "", role: "", start: "", end: "", bullets: ["", "", ""] });
-      setDraft(() => normalizeResumeDraft(draft));
-      remount();
-      onPersist();
-    } else if (action === "remove-exp") {
-      const i = Number(t.getAttribute("data-i"));
-      if (draft.experience.length < 2) return;
-      draft.experience.splice(i, 1);
-      setDraft(() => normalizeResumeDraft(draft));
-      remount();
-      onPersist();
-    } else if (action === "add-edu") {
-      draft.education.push({ school: "", degree: "", start: "", end: "" });
-      setDraft(() => normalizeResumeDraft(draft));
-      remount();
-      onPersist();
-    } else if (action === "remove-edu") {
-      const i = Number(t.getAttribute("data-i"));
-      if (draft.education.length < 2) return;
-      draft.education.splice(i, 1);
-      setDraft(() => normalizeResumeDraft(draft));
-      remount();
-      onPersist();
-    } else if (action === "add-link") {
-      draft.links.push({ label: "", url: "" });
-      setDraft(() => normalizeResumeDraft(draft));
-      remount();
-      onPersist();
-    } else if (action === "remove-link") {
-      const i = Number(t.getAttribute("data-i"));
-      if (draft.links.length < 2) return;
-      draft.links.splice(i, 1);
-      setDraft(() => normalizeResumeDraft(draft));
-      remount();
-      onPersist();
-    } else if (action === "add-proj") {
-      draft.projects.push({ name: "", context: "", start: "", end: "", bullets: ["", ""] });
-      setDraft(() => normalizeResumeDraft(draft));
-      remount();
-      onPersist();
-    } else if (action === "remove-proj") {
-      const i = Number(t.getAttribute("data-i"));
-      if (draft.projects.length < 2) return;
-      draft.projects.splice(i, 1);
-      setDraft(() => normalizeResumeDraft(draft));
-      remount();
-      onPersist();
-    }
+    previewEl.innerHTML = buildEditableResumeHtml(draft);
   }
 
-  host.addEventListener("input", onInput);
-  host.addEventListener("click", onClick, { capture: true });
+  function persist() {
+    const draft = getDraft();
+    const templateId = normalizeTemplateId(draft.templateId);
+    const next = readEditableMultipageDraft(previewEl, templateId);
+    onDraftChange?.({ ...next, templateId });
+  }
 
-  remount();
-  return { remount };
+  paint();
+
+  previewEl.addEventListener("input", persist);
+  previewEl.addEventListener("change", persist);
+
+  previewEl.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-action]");
+    if (!btn) return;
+    const action = btn.getAttribute("data-action");
+    const draft = getDraft();
+    if (action === "add-exp") {
+      draft.experience = [...(draft.experience || []), { company: "", role: "", start: "", end: "", bullets: ["", "", ""] }];
+    } else if (action === "remove-exp") {
+      const i = Number(btn.getAttribute("data-i"));
+      draft.experience = (draft.experience || []).filter((_, j) => j !== i);
+    } else if (action === "add-proj") {
+      draft.projects = [...(draft.projects || []), { name: "", context: "", start: "", end: "", bullets: ["", ""] }];
+    } else if (action === "remove-proj") {
+      const i = Number(btn.getAttribute("data-i"));
+      draft.projects = (draft.projects || []).filter((_, j) => j !== i);
+    } else if (action === "add-edu") {
+      draft.education = [...(draft.education || []), { school: "", degree: "", start: "", end: "" }];
+    } else if (action === "add-link") {
+      draft.links = [...(draft.links || []), { label: "", url: "" }];
+    }
+    onDraftChange?.(draft);
+    paint();
+    persist();
+  });
+
+  return {
+    remount() {
+      paint();
+    },
+  };
 }

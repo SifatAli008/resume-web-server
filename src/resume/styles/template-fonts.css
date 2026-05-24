@@ -1,0 +1,103 @@
+/* Per-template typography — editorial / product-grade stacks */
+[data-template="resume_01"] {
+  font-family: "DM Sans", "Inter", system-ui, sans-serif;
+}
+[data-template="resume_02"] {
+  font-family: "IBM Plex Sans", "Inter", system-ui, sans-serif;
+}
+[data-template="resume_03"] {
+  font-family: "Inter", system-ui, sans-serif;
+}
+[data-template="resume_04"] {
+  font-family: "Inter", system-ui, sans-serif;
+}
+[data-template="resume_04"] .cv-name,
+[data-template="resume_04"] .cv-serif-doc .cv-name {
+  font-family: "Source Serif 4", Georgia, serif;
+}
+[data-template="resume_05"] {
+  font-family: "Inter", system-ui, sans-serif;
+}
+[data-template="resume_06"] {
+  font-family: "Inter", system-ui, sans-serif;
+}
+[data-template="resume_06"] .cv-name {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 700;
+}
+[data-template="resume_07"] {
+  font-family: "Manrope", "Inter", system-ui, sans-serif;
+}
+[data-template="resume_08"] {
+  font-family: "JetBrains Mono", "Inter", monospace;
+  font-size: 13px;
+}
+[data-template="resume_08"] .cv-name {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: var(--cv-sz-name);
+}
+[data-template="resume_09"] {
+  font-family: "Libre Baskerville", Georgia, serif;
+}
+[data-template="resume_10"] {
+  font-family: "Public Sans", "Inter", system-ui, sans-serif;
+}
+[data-template="resume_11"] {
+  font-family: "Literata", Georgia, serif;
+}
+[data-template="resume_12"],
+[data-template="resume_19"] {
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+}
+[data-template="resume_13"] {
+  font-family: "Outfit", "Inter", system-ui, sans-serif;
+}
+[data-template="resume_14"] {
+  font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
+}
+[data-template="resume_15"] {
+  font-family: "Archivo", "Inter", system-ui, sans-serif;
+}
+[data-template="resume_16"] {
+  font-family: "Newsreader", Georgia, serif;
+}
+[data-template="resume_17"] {
+  font-family: "Inter", system-ui, sans-serif;
+}
+[data-template="resume_17"] .cv-name {
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+[data-template="resume_18"] {
+  font-family: "Inter", system-ui, sans-serif;
+}
+[data-template="resume_18"] .cv-name {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 700;
+  text-transform: none;
+}
+[data-template="resume_20"] {
+  font-family: "DM Sans", "Inter", system-ui, sans-serif;
+}
+
+/* Subtle template accent on page 1 */
+#resume-print-root.cv-v2 .cv-page:first-of-type::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--cv-a600);
+}
+
+#resume-print-root.cv-v2[data-template="resume_03"] .cv-page:first-of-type::before,
+#resume-print-root.cv-v2[data-template="resume_09"] .cv-page:first-of-type::before {
+  height: 2px;
+  background: var(--cv-text-1);
+}
+
+#resume-print-root.cv-v2[data-template="resume_17"] .cv-page:first-of-type::before {
+  height: 6px;
+  background: var(--cv-a800);
+}

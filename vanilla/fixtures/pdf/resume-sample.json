@@ -1,0 +1,47 @@
+{
+  "templateId": "resume_fluvo_1",
+  "fullName": "Alex Morgan",
+  "title": "Senior Software Engineer",
+  "email": "alex.morgan@example.com",
+  "phone": "+1 555 010 2200",
+  "location": "Berlin, Germany",
+  "showPhoto": false,
+  "photoUrl": "",
+  "links": [
+    { "label": "LinkedIn", "url": "https://linkedin.com/in/alexmorgan" },
+    { "label": "GitHub", "url": "https://github.com/alexmorgan" }
+  ],
+  "summary": "Full-stack engineer with 10+ years building scalable web platforms and leading cross-functional delivery.",
+  "skills": "TypeScript · React · Node.js · PostgreSQL · AWS · Kubernetes\nLeadership: mentoring, code review, stakeholder communication",
+  "experience": [
+    {
+      "company": "Northwind Systems",
+      "role": "Staff Engineer",
+      "start": "2021-03",
+      "end": "Present",
+      "bullets": [
+        "Led migration to event-driven architecture serving 2M daily active users.",
+        "Reduced p95 API latency by 40% through query tuning and caching."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Open Metrics Kit",
+      "context": "Open-source observability SDK",
+      "start": "2023",
+      "end": "2024",
+      "bullets": ["1.2k GitHub stars; adopted by 3 partner teams."]
+    }
+  ],
+  "education": [
+    {
+      "school": "Technical University of Munich",
+      "degree": "M.Sc. Computer Science",
+      "start": "2012",
+      "end": "2014"
+    }
+  ],
+  "certifications": "AWS Solutions Architect – Professional (2024)",
+  "languages": "English (fluent) · German (professional) · French (basic)"
+}

@@ -1,6 +1,7 @@
 import { escapeHtml } from "../escape-html.js";
 import { buildLinksHtml, contactBits, dateRange, nl2br } from "./shared-preview.js";
 import { CV_PH, hasText } from "./cv-placeholders.js";
+import { CV_SPACE } from "./cv-design-tokens.js";
 import { articlePhotoClass, photoSlot, sec } from "./cv-shared-ui.js";
 import { resumeIcon } from "../resume-icons.js";
 import { getTemplateUi } from "./cv-template-ui.js";
@@ -142,7 +143,7 @@ function experienceHtml(jobs, theme, opts = {}) {
         .join("");
       if (!company && !role && !bullets) return "";
       return `
-        <article class="cv-avoid-break mb-4 grid grid-cols-[6.75rem_minmax(0,1fr)] gap-x-4 border-b border-zinc-100/90 pb-4 last:border-0">
+        <article class="cv-exp-row cv-avoid-break mb-[1rem] grid grid-cols-[7rem_minmax(0,1fr)] gap-x-[1.25rem] border-b border-[#e4e4e7] pb-[1rem] last:border-0">
           <time class="pt-0.5 text-[11px] font-medium tabular-nums leading-snug text-zinc-500">${range || cvText("", CV_PH.expStart, "text-[11px] text-zinc-400 italic")}</time>
           <div class="min-w-0">
             <h3 class="text-[14px] font-semibold leading-snug text-zinc-950">${role ? escapeHtml(role) : `<span class="text-zinc-400 italic">${escapeHtml(CV_PH.expRole)}</span>`}</h3>
@@ -187,7 +188,7 @@ function educationHtml(draft, theme) {
       const range = dateRange(ed.start, ed.end);
       if (!school && !degree) return "";
       return `
-        <div class="cv-avoid-break mb-3 grid grid-cols-[6.75rem_minmax(0,1fr)] gap-x-4">
+        <div class="cv-avoid-break mb-3 grid grid-cols-[7rem_minmax(0,1fr)] gap-x-[1.25rem]">
           <time class="text-[11px] font-medium tabular-nums text-zinc-500">${range || "—"}</time>
           <div>
             <p class="text-[14px] font-semibold text-zinc-950">${degree ? escapeHtml(degree) : `<span class="italic text-zinc-400">${escapeHtml(CV_PH.eduDegree)}</span>`}</p>
@@ -208,7 +209,7 @@ function headerStandard(draft, theme) {
   const ac = a(theme);
   const ui = getTemplateUi(theme.id);
   const bits = contactBits(draft);
-  const links = buildLinksHtml(draft, linkPack(theme));
+  const links = ui.linksZone === "header" ? buildLinksHtml(draft, linkPack(theme)) : "";
   const contact = bits.length
     ? bits.map((c) => `<span>${escapeHtml(c)}</span>`).join(`<span class="text-zinc-300" aria-hidden="true">·</span>`)
     : `<span class="text-zinc-400 italic">${escapeHtml(`${CV_PH.email} · ${CV_PH.phone}`)}</span>`;
@@ -218,8 +219,8 @@ function headerStandard(draft, theme) {
       <div class="flex items-start gap-4">
         ${photoSlot(draft, ui)}
         <div class="min-w-0 flex-1">
-          <h1 class="text-[1.65rem] font-bold leading-tight tracking-tight text-zinc-950">${hasText(draft.fullName) ? escapeHtml(draft.fullName) : `<span class="text-zinc-400 italic">${escapeHtml(CV_PH.fullName)}</span>`}</h1>
-          <p class="mt-1 text-[14px] font-medium ${ac.h2}">${hasText(draft.title) ? escapeHtml(draft.title) : `<span class="italic text-zinc-400">${escapeHtml(CV_PH.title)}</span>`}</p>
+          <h1 class="cv-name-emphasis text-[1.75rem] font-extrabold leading-tight tracking-[-0.025em] text-zinc-950">${hasText(draft.fullName) ? escapeHtml(draft.fullName) : `<span class="text-zinc-400 italic">${escapeHtml(CV_PH.fullName)}</span>`}</h1>
+          <p class="mt-1 text-[0.95rem] font-normal tracking-[0.01em] text-[#52525b]">${hasText(draft.title) ? escapeHtml(draft.title) : `<span class="italic text-zinc-400">${escapeHtml(CV_PH.title)}</span>`}</p>
           <p class="mt-2.5 flex flex-wrap gap-x-2 gap-y-1 text-[12px] text-zinc-700">${contact}</p>
           ${links ? `<p class="mt-1.5 text-[12px]">${links}</p>` : `<p class="mt-1.5 text-[12px] italic text-zinc-400">${escapeHtml(CV_PH.linkLabel)}: ${escapeHtml(CV_PH.linkUrl)}</p>`}
         </div>
@@ -249,15 +250,48 @@ function headerSerif(draft, theme) {
   return `
     <header class="cv-avoid-break mb-6 border-b-2 border-zinc-900 pb-5 text-center">
       <div class="mb-3 flex justify-center">${photoSlot(draft, ui, { size: "lg" })}</div>
-      <h1 class="text-[1.5rem] font-bold uppercase tracking-wide text-zinc-950">${hasText(draft.fullName) ? escapeHtml(draft.fullName) : escapeHtml(CV_PH.fullName)}</h1>
-      <p class="mt-2 text-xs uppercase tracking-[0.22em] text-zinc-600">${hasText(draft.title) ? escapeHtml(draft.title) : escapeHtml(CV_PH.title)}</p>
+      <h1 class="cv-name-emphasis text-[1.75rem] font-extrabold uppercase tracking-[-0.025em] text-zinc-950">${hasText(draft.fullName) ? escapeHtml(draft.fullName) : escapeHtml(CV_PH.fullName)}</h1>
+      <p class="mt-2 text-[0.95rem] font-normal tracking-[0.01em] text-[#52525b]">${hasText(draft.title) ? escapeHtml(draft.title) : escapeHtml(CV_PH.title)}</p>
       <p class="mt-3 text-[12px] text-zinc-700">${contactBits(draft).map((c) => escapeHtml(c)).join(" · ") || escapeHtml(`${CV_PH.email} · ${CV_PH.location}`)}</p>
     </header>`;
 }
 
+function headerCompact(draft, theme) {
+  const ui = getTemplateUi(theme.id);
+  const ac = a(theme);
+  return `
+    <header class="cv-header-compact cv-avoid-break mb-6 flex flex-col justify-between gap-3 border-b border-zinc-200 pb-5 sm:flex-row sm:items-end">
+      <div class="flex min-w-0 flex-1 items-end gap-4">
+        ${photoSlot(draft, ui, { size: "sm", context: "header" })}
+        <div class="min-w-0 flex-1">
+          <h1 class="cv-name-emphasis text-[1.75rem] font-extrabold leading-tight tracking-[-0.025em] text-zinc-950">${hasText(draft.fullName) ? escapeHtml(draft.fullName) : escapeHtml(CV_PH.fullName)}</h1>
+          <p class="mt-0.5 text-xs font-bold uppercase tracking-[0.18em] ${ac.h2}">${hasText(draft.title) ? escapeHtml(draft.title) : escapeHtml(CV_PH.title)}</p>
+        </div>
+      </div>
+      <div class="text-right text-[12px] text-zinc-700">${contactLines(draft, ui)}</div>
+    </header>`;
+}
+
+function headerBannerStatic(draft, theme) {
+  const ui = getTemplateUi(theme.id);
+  const bits = contactBits(draft);
+  const strip = `<div class="cv-banner-strip mb-4 bg-zinc-900 px-4 py-2.5 text-center text-[11px] text-white print:bg-zinc-900">${bits.map((c) => escapeHtml(c)).join(" · ") || escapeHtml(CV_PH.email)}</div>`;
+  return `${strip}
+  <header class="cv-header-banner cv-avoid-break mb-5 flex items-start gap-4">
+    ${photoSlot(draft, ui, { context: "header" })}
+    <div class="min-w-0 flex-1">
+      <h1 class="cv-name-emphasis text-[1.75rem] font-extrabold tracking-[-0.025em] text-zinc-950">${hasText(draft.fullName) ? escapeHtml(draft.fullName) : escapeHtml(CV_PH.fullName)}</h1>
+      <p class="mt-1 text-[0.95rem] font-normal tracking-[0.01em] text-[#52525b]">${hasText(draft.title) ? escapeHtml(draft.title) : escapeHtml(CV_PH.title)}</p>
+    </div>
+  </header>`;
+}
+
 function pickHeader(draft, theme) {
-  if (theme.layout === "ribbon") return headerRibbon(draft, theme);
-  if (theme.layout === "serif" || theme.font === "serif") return headerSerif(draft, theme);
+  const ui = getTemplateUi(theme.id);
+  if (ui.header === "banner" || theme.layout === "banner") return headerBannerStatic(draft, theme);
+  if (ui.header === "ribbon" || theme.layout === "ribbon") return headerRibbon(draft, theme);
+  if (ui.header === "serif" || theme.layout === "serif") return headerSerif(draft, theme);
+  if (ui.header === "compact") return headerCompact(draft, theme);
   return headerStandard(draft, theme);
 }
 
@@ -283,7 +317,7 @@ function contactLines(draft, ui, dark = false) {
 function blockSection(title, inner, theme) {
   if (!inner) return "";
   const ui = getTemplateUi(theme.id);
-  return `<section class="mb-5 cv-avoid-break">${sec(title, ui)}${inner}</section>`;
+  return `<section class="${CV_SPACE.section} cv-avoid-break">${sec(title, ui)}${inner}</section>`;
 }
 
 function page1Body(draft, theme, p1Exp) {
@@ -324,11 +358,21 @@ function page3Body(draft, theme) {
   let html = blockSection("Education", educationHtml(draft, theme) || `<p class="italic text-zinc-400 text-[13px]">${escapeHtml(CV_PH.eduDegree)}</p>`, theme);
   html += blockSection("Certifications & Licenses", multilineBlock(draft.certifications, CV_PH.certifications), theme);
   html += blockSection("Languages", multilineBlock(draft.languages, CV_PH.languages), theme);
-  if (skills && theme.layout === "split-right") {
-    html += blockSection("Technical Skills", skillsVisualHtml(draft, theme), theme);
-  } else if (skills) {
+  if (skills && theme.layout !== "split-right") {
     html += blockSection("Additional Skills", skillsVisualHtml(draft, theme), theme);
   }
+  return html;
+}
+
+function splitRailStatic(draft, theme) {
+  const ui = getTemplateUi(theme.id);
+  const railCls = ui.rail || "border-l border-zinc-200 bg-zinc-50/60";
+  const links = ui.linksZone === "rail" ? buildLinksHtml(draft, linkPack(theme)) : "";
+  let html = `<aside class="cv-rail cv-rail-split border-l p-4 text-[12px] print:w-[11.5rem] ${railCls}">`;
+  html += blockSection("Skills", skillsVisualHtml(draft, theme), theme);
+  html += blockSection("Languages", multilineBlock(draft.languages, CV_PH.languages), theme);
+  if (links) html += blockSection("Links", links, theme);
+  html += `</aside>`;
   return html;
 }
 
@@ -349,9 +393,9 @@ function sidebarContent(draft, theme) {
     sep: "text-zinc-600",
   });
   return `
-    <div class="mb-4 flex justify-center">${photoSlot(draft, ui, { dark: true, size: "md" })}</div>
-    <h1 class="text-xl font-bold leading-tight">${hasText(draft.fullName) ? escapeHtml(draft.fullName) : escapeHtml(CV_PH.fullName)}</h1>
-    <p class="mt-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/70">${hasText(draft.title) ? escapeHtml(draft.title) : escapeHtml(CV_PH.title)}</p>
+    <div class="mb-4 flex justify-center">${photoSlot(draft, ui, { dark: true, context: "sidebar" })}</div>
+    <h1 class="cv-name-emphasis text-[1.75rem] font-extrabold leading-tight tracking-[-0.025em]">${hasText(draft.fullName) ? escapeHtml(draft.fullName) : escapeHtml(CV_PH.fullName)}</h1>
+    <p class="mt-1.5 text-[0.95rem] font-normal tracking-[0.01em] text-white/80">${hasText(draft.title) ? escapeHtml(draft.title) : escapeHtml(CV_PH.title)}</p>
     <div class="mt-5 space-y-1 border-t border-white/15 pt-4 text-[12px] text-zinc-300">
       ${contactLines(draft, ui, true)}
     </div>
@@ -384,25 +428,25 @@ export function renderMultipageCv(draft, themeId) {
       cvPage(2, wrapSidebar(side, p2, theme, sidePos), draft, theme) +
       cvPage(3, wrapSidebar(side, p3, theme, sidePos), draft, theme);
   } else if (theme.layout === "split-right") {
-    const railCls = ui.rail || "border-l border-zinc-200 bg-zinc-50/60";
-    const rail = `<aside class="border-l p-4 text-[12px] ${railCls}">${blockSection("Skills", skillsVisualHtml(draft, theme), theme)}${blockSection("Languages", multilineBlock(draft.languages, CV_PH.languages), theme)}</aside>`;
-    const grid = (body) => `<div class="grid gap-0 sm:grid-cols-[1fr_11.5rem]"><div class="p-5">${body}</div>${rail}</div>`;
+    const rail = splitRailStatic(draft, theme);
+    const grid = (body) =>
+      `<div class="cv-split-grid grid gap-0 sm:grid-cols-[1fr_11.5rem] print:grid-cols-[1fr_11.5rem]"><div class="min-w-0 p-5 print:p-5">${body}</div>${rail}</div>`;
     pages = cvPage(1, grid(p1), draft, theme) + cvPage(2, grid(p2), draft, theme) + cvPage(3, grid(p3), draft, theme);
   } else if (theme.layout === "banner") {
-    const banner = `<div class="bg-zinc-900 px-4 py-2.5 text-center text-[11px] text-white">${contactBits(draft).map((c) => escapeHtml(c)).join(" · ") || escapeHtml(CV_PH.email)}</div>`;
-    pages =
-      cvPage(1, banner + p1, draft, theme) + cvPage(2, banner + p2, draft, theme) + cvPage(3, banner + p3, draft, theme);
+    pages = cvPage(1, p1, draft, theme) + cvPage(2, p2, draft, theme) + cvPage(3, p3, draft, theme);
   } else if (theme.layout === "timeline") {
     const ac = a(theme);
-    const tl = (html) => `<div class="border-l-2 ${ac.line.replace("bg-", "border-")} pl-4">${html}</div>`;
+    const tl = (html) => `<div class="cv-timeline-accent border-l-4 ${ac.line.replace("bg-", "border-")} pl-4">${html}</div>`;
     pages =
       cvPage(1, tl(p1), draft, theme) + cvPage(2, tl(p2), draft, theme) + cvPage(3, tl(p3), draft, theme);
   } else if (theme.layout === "magazine") {
-    const mag = (html, pg) =>
-      pg === 1
-        ? `<div class="columns-1 gap-6 sm:columns-2 sm:gap-8">${html}</div>`
-        : html;
-    pages = cvPage(1, mag(p1, 1), draft, theme) + cvPage(2, p2, draft, theme) + cvPage(3, p3, draft, theme);
+    const ui = getTemplateUi(theme.id);
+    const summary = String(draft.summary || "").trim();
+    const skills = String(draft.skills || "").trim();
+    const header = pickHeader(draft, theme);
+    const links = ui.linksZone === "header" ? blockSection("Links", buildLinksHtml(draft, linkPack(theme)), theme) : "";
+    const magP1 = `${header}${links}<div class="mb-[1.25rem] grid gap-6 sm:grid-cols-2 cv-magazine-paris">${blockSection("Professional Summary", summary ? `<p class="text-[14px] leading-[1.45] text-zinc-800">${nl2br(summary)}</p>` : multilineBlock("", CV_PH.summary), theme)}${skills ? blockSection("Core Competencies", skillsVisualHtml(draft, theme), theme) : ""}</div>${blockSection("Professional Experience", experienceHtml(p1Exp, theme), theme)}`;
+    pages = cvPage(1, magP1, draft, theme) + cvPage(2, p2, draft, theme) + cvPage(3, p3, draft, theme);
   } else if (theme.layout === "swiss") {
     const swiss = (html) => `<div class="cv-swiss-wrap max-w-none">${html}</div>`;
     pages = cvPage(1, swiss(p1), draft, theme) + cvPage(2, swiss(p2), draft, theme) + cvPage(3, swiss(p3), draft, theme);

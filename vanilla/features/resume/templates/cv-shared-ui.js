@@ -3,14 +3,9 @@ import { DEFAULT_CV_PHOTO_URL } from "./cv-defaults.js";
 import { sectionIconFor } from "./cv-template-ui.js";
 import { escapeHtml } from "../escape-html.js";
 import { resumeIcon } from "../resume-icons.js";
+import { CV_ICON, CV_SPACE, photoSizeClass } from "./cv-design-tokens.js";
 
-/** Consistent vertical rhythm (international CV standard) */
-export const CV_SPACE = {
-  section: "mb-7 last:mb-0",
-  block: "mb-5",
-  item: "mb-4 pb-4 last:mb-0 last:border-0 last:pb-0",
-  gridDate: "grid grid-cols-[7rem_minmax(0,1fr)] gap-x-5 gap-y-1.5",
-};
+export { CV_SPACE };
 
 export function articlePhotoClass(draft) {
   return draft.showPhoto ? "cv-has-photo" : "cv-no-photo";
@@ -23,7 +18,7 @@ export function photoEditorBar(draft, ui = {}) {
     ? `<p class="mt-1.5 text-[11px] font-medium text-blue-800">Recommended for this template (common in EU, Middle East, and Asia).</p>`
     : "";
   return `
-  <div class="cv-photo-editor print:hidden mb-4 rounded-lg border border-dashed border-blue-200 bg-blue-50/50 px-3 py-2.5" data-photo-editor>
+  <div class="cv-photo-editor photo-edit-bar no-print print:hidden mb-4 rounded-lg border border-dashed border-blue-200 bg-blue-50/50 px-3 py-2.5" data-photo-editor>
     <label class="flex cursor-pointer items-start gap-2 text-xs text-zinc-700">
       ${resumeIcon("camera", "h-4 w-4 shrink-0 text-blue-600 mt-0.5")}
       <input type="checkbox" data-f="showPhoto" class="mt-0.5" ${checked} />
@@ -47,13 +42,14 @@ function photoInner(draft, ui, dark) {
 }
 
 /** Profile photo frame — hidden via `.cv-no-photo .cv-photo-slot` when toggled off */
-export function photoSlot(draft, ui, { dark = false, size = "md" } = {}) {
+export function photoSlot(draft, ui, { dark = false, size, context } = {}) {
+  const ctx = context || (ui.layout === "sidebar-left" || ui.layout === "sidebar-right" ? "sidebar" : "header");
   const sz =
     size === "lg"
-      ? "h-[5.5rem] w-[5.5rem]"
+      ? photoSizeClass(ui, { context: "sidebar" })
       : size === "sm"
-        ? "h-[3.75rem] w-[3.75rem]"
-        : "h-[4.5rem] w-[4.5rem]";
+        ? photoSizeClass(ui, { context: "header" })
+        : photoSizeClass(ui, { context: ctx });
   const frame = ui.photoFrame || "rounded-md";
   const ring = dark ? "border-white/25" : "border-zinc-200";
   const bg = dark ? "bg-white/10" : "bg-zinc-100";
@@ -65,8 +61,8 @@ export function photoSlot(draft, ui, { dark = false, size = "md" } = {}) {
 
 function sectionIconEl(title, ui, dark = false) {
   const name = sectionIconFor(title);
-  const ic = dark ? ui.iconSection || "text-sky-300" : ui.iconSection || ui.iconContact || "text-zinc-500";
-  return resumeIcon(name, `h-4 w-4 shrink-0 ${ic}`);
+  const ic = dark ? ui.iconSection || "text-sky-300" : ui.iconSection || "text-zinc-600";
+  return resumeIcon(name, `${CV_ICON} ${ic}`);
 }
 
 export function sec(title, ui, { dark = false } = {}) {
@@ -76,18 +72,18 @@ export function sec(title, ui, { dark = false } = {}) {
     return `<div class="${CV_SPACE.block} ${ribbon} flex items-center gap-2 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white">${icon}${escapeHtml(title)}</div>`;
   }
   if (section === "boxed") {
-    return `<h2 class="mb-3.5 flex items-center gap-2 border-l-[3px] border-current pl-3 text-[11px] font-bold uppercase tracking-[0.15em] ${h2}">${icon}${escapeHtml(title)}</h2>`;
+    return `<h2 class="mb-[1.25rem] flex items-center gap-2 border-l-[3px] border-current bg-zinc-50/50 pl-3 py-0.5 text-[11px] font-bold uppercase tracking-[0.15em] ${h2} cv-section-h2">${icon}${escapeHtml(title)}</h2>`;
   }
   if (section === "minimal") {
     const lbl = dark ? "text-white/55" : ui.h2 || "text-zinc-500";
     return `<h2 class="mb-2.5 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] ${lbl}">${icon}${escapeHtml(title)}</h2>`;
   }
   if (section === "double") {
-    return `<div class="mb-4 flex items-center justify-center gap-2 border-b border-t-2 border-zinc-300 py-1.5 text-[10px] font-bold uppercase tracking-[0.24em] ${h2}">${icon}${escapeHtml(title)}</div>`;
+    return `<div class="mb-[1.25rem] flex items-center justify-center gap-2 border-b border-t border-[#a1a1aa] py-1.5 text-[10px] font-bold uppercase tracking-[0.24em] ${h2} cv-section-h2">${icon}${escapeHtml(title)}</div>`;
   }
-  return `<div class="mb-3.5 flex items-center gap-2.5">
+  return `<div class="mb-[1.25rem] flex items-center gap-2.5 cv-section-ruled">
     ${icon}
-    <h2 class="shrink-0 text-[11px] font-semibold uppercase tracking-[0.14em] ${h2}">${escapeHtml(title)}</h2>
+    <h2 class="cv-section-h2 shrink-0 text-[11px] font-semibold uppercase tracking-[0.14em] ${h2}">${escapeHtml(title)}</h2>
     <div class="h-px min-w-[2rem] flex-1 ${line}" aria-hidden="true"></div>
   </div>`;
 }
@@ -97,8 +93,9 @@ export function sectionWrap(title, ui, inner) {
 }
 
 export function pageShell(pageNum, body, tplId, ui) {
+  const formal = tplId === 12 || tplId === 19 ? "cv-page-padding-formal" : "";
   return `
-  <section class="cv-page cv-tpl-${tplId}-page ${ui.page || ""}" data-page="${pageNum}" aria-label="Page ${pageNum}">
+  <section class="cv-page cv-tpl-${tplId}-page ${ui.page || ""} ${formal}" data-page="${pageNum}" aria-label="Page ${pageNum}">
     <div class="cv-page-body">${body}</div>
   </section>`;
 }
