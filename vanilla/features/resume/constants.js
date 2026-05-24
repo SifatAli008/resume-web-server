@@ -61,11 +61,16 @@ export function normalizeTemplateId(templateId) {
   if (LEGACY_FLUVO_IDS[id]) return LEGACY_FLUVO_IDS[id];
   const fluvo = /^resume_fluvo_(\d+)$/.exec(id);
   if (fluvo) return `resume_${fluvo[1].padStart(2, "0")}`;
+  const v2 = /^resume_(\d{1,2})$/.exec(id);
+  if (v2) {
+    const n = Number(v2[1]);
+    if (n >= 1 && n <= 20) return `resume_${String(n).padStart(2, "0")}`;
+  }
   return id;
 }
 
 export function isKnownResumeTemplateId(id) {
-  return typeof id === "string" && KNOWN.has(id);
+  return typeof id === "string" && KNOWN.has(normalizeTemplateId(id));
 }
 
 export function resumeTemplateEditableVariant(templateId) {

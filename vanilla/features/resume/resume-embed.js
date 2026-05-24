@@ -12,10 +12,12 @@ export function isResumeEmbedFromUrl(searchParams) {
   return getResumeEmbedMode(searchParams) === "app";
 }
 
+import { normalizeTemplateId } from "./constants.js";
+
 export function parseTemplateIdFromPath(pathname = "") {
   const path = String(pathname || "").replace(/\/$/, "") || "/";
-  const m = /^\/resume\/(resume_\d{2}|resume_fluvo_\d+)$/.exec(path);
-  return m ? m[1] : null;
+  const m = /^\/resume\/(resume_\d{1,2}|resume_fluvo_\d+)$/.exec(path);
+  return m ? normalizeTemplateId(m[1]) : null;
 }
 
 export function applyEmbedHtmlAttrs(mode) {

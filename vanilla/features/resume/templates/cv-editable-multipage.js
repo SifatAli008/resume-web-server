@@ -3,6 +3,12 @@ import { articlePhotoClass, pageShell, photoEditorBar } from "./cv-shared-ui.js"
 import { readLinksFromRoot } from "./cv-links-ui.js";
 import { headerLinks, pickHeader } from "./cv-headers.js";
 import { buildInvoiceMultipageCv } from "./cv-invoice-render.js";
+import { renderEstellePage } from "./cv-estelle-blocks.js";
+import { renderGallegoPage } from "./cv-gallego-blocks.js";
+import { renderMitchellPage } from "./cv-mitchell-blocks.js";
+import { renderSanchezPage } from "./cv-sanchez-blocks.js";
+import { renderAlvaradoPage } from "./cv-alvarado-blocks.js";
+import { renderSchumacherPage } from "./cv-schumacher-blocks.js";
 import {
   blockCerts,
   blockEdu,
@@ -126,7 +132,43 @@ function renderMagazine(draft, tplId, ui) {
   return pageShell(1, p1, tplId, ui) + pageShell(2, p2, tplId, ui) + pageShell(3, p3, tplId, ui);
 }
 
+function renderEstelle(draft, tplId, ui) {
+  const body = renderEstellePage(draft, tplId, ui);
+  return pageShell(1, body, tplId, ui);
+}
+
+function renderGallego(draft, tplId, ui) {
+  const body = renderGallegoPage(draft, tplId, ui);
+  return pageShell(1, body, tplId, ui);
+}
+
+function renderMitchell(draft, tplId, ui) {
+  const body = renderMitchellPage(draft, tplId, ui);
+  return pageShell(1, body, tplId, ui);
+}
+
+function renderSanchez(draft, tplId, ui) {
+  const body = renderSanchezPage(draft, tplId, ui);
+  return pageShell(1, body, tplId, ui);
+}
+
+function renderAlvarado(draft, tplId, ui) {
+  const body = renderAlvaradoPage(draft);
+  return pageShell(1, body, tplId, ui);
+}
+
+function renderSchumacher(draft, tplId, ui) {
+  const body = renderSchumacherPage(draft);
+  return pageShell(1, body, tplId, ui);
+}
+
 const RENDERERS = {
+  estelle: renderEstelle,
+  gallego: renderGallego,
+  mitchell: renderMitchell,
+  sanchez: renderSanchez,
+  alvarado: renderAlvarado,
+  schumacher: renderSchumacher,
   classic: renderClassic,
   "sidebar-left": renderSidebarLeft,
   "sidebar-right": renderSidebarRight,
@@ -142,7 +184,7 @@ const RENDERERS = {
 };
 
 export function buildEditableMultipageCv(draft, templateId, options = {}) {
-  const { invoiceShell = false, showPhotoEditor = true } = options;
+  const { invoiceShell = false, showPhotoEditor = false } = options;
   const tplId = tplNum(templateId);
   const ui = getTemplateUi(tplId);
   if (invoiceShell) {
@@ -151,6 +193,12 @@ export function buildEditableMultipageCv(draft, templateId, options = {}) {
   const render = RENDERERS[ui.layout] || renderClassic;
   const pages = render(draft, tplId, ui);
   const layoutCls = [
+    ui.layout === "estelle" ? "cv-layout-estelle" : "",
+    ui.layout === "gallego" ? "cv-layout-gallego" : "",
+    ui.layout === "mitchell" ? "cv-layout-mitchell" : "",
+    ui.layout === "sanchez" ? "cv-layout-sanchez" : "",
+    ui.layout === "alvarado" ? "cv-layout-alvarado" : "",
+    ui.layout === "schumacher" ? "cv-layout-schumacher" : "",
     ui.layout === "bands" ? "cv-layout-bands" : "",
     ui.layout === "banner" ? "cv-layout-banner" : "",
     ui.layout === "swiss" ? "cv-layout-swiss cv-swiss-barcelona" : "",
@@ -158,7 +206,8 @@ export function buildEditableMultipageCv(draft, templateId, options = {}) {
   ]
     .filter(Boolean)
     .join(" ");
-  return `<article id="resume-print-root" class="resume-preview-article cv-document cv-tpl-${tplId} ${ui.fontClass || ""} ${layoutCls} ${articlePhotoClass(draft)} mx-auto max-w-[210mm] text-zinc-900 antialiased" data-cv-template="${tplId}" data-invoice-shell="0">${photoEditorBar(draft, ui)}${pages}</article>`;
+  const photoBar = showPhotoEditor ? photoEditorBar(draft, ui) : "";
+  return `<article id="resume-print-root" class="resume-preview-article cv-document cv-desktop-layout cv-tpl-${tplId} ${ui.fontClass || ""} ${layoutCls} ${articlePhotoClass(draft)} mx-auto max-w-[210mm] text-zinc-900 antialiased" data-cv-template="${tplId}" data-invoice-shell="0">${photoBar}${pages}</article>`;
 }
 
 export function readEditableMultipageDraft(root, templateId) {
@@ -168,13 +217,20 @@ export function readEditableMultipageDraft(root, templateId) {
   const expWraps = [...root.querySelectorAll("[data-exp-job]")].sort(
     (a, b) => Number(a.getAttribute("data-exp-job")) - Number(b.getAttribute("data-exp-job")),
   );
-  const experience = expWraps.map((w) => ({
-    role: w.querySelector('[data-exp-f="role"]')?.value ?? "",
-    company: w.querySelector('[data-exp-f="company"]')?.value ?? "",
-    start: w.querySelector('[data-exp-f="start"]')?.value ?? "",
-    end: w.querySelector('[data-exp-f="end"]')?.value ?? "",
-    bullets: [...w.querySelectorAll("[data-bullet]")].map((inp) => inp.value ?? ""),
-  }));
+  const experience = expWraps.map((w) => {
+    const desc = w.querySelector('[data-exp-f="desc"]')?.value ?? "";
+    const bulletsFromInputs = [...w.querySelectorAll("[data-bullet]")].map((inp) => inp.value ?? "");
+    const bullets = desc.trim()
+      ? [desc, ...bulletsFromInputs.slice(1)]
+      : bulletsFromInputs;
+    return {
+      role: w.querySelector('[data-exp-f="role"]')?.value ?? "",
+      company: w.querySelector('[data-exp-f="company"]')?.value ?? "",
+      start: w.querySelector('[data-exp-f="start"]')?.value ?? "",
+      end: w.querySelector('[data-exp-f="end"]')?.value ?? "",
+      bullets,
+    };
+  });
   const projWraps = [...root.querySelectorAll("[data-proj-row]")].sort(
     (a, b) => Number(a.getAttribute("data-proj-row")) - Number(b.getAttribute("data-proj-row")),
   );
@@ -193,6 +249,17 @@ export function readEditableMultipageDraft(root, templateId) {
     degree: w.querySelector('[data-edu-f="degree"]')?.value ?? "",
     start: w.querySelector('[data-edu-f="start"]')?.value ?? "",
     end: w.querySelector('[data-edu-f="end"]')?.value ?? "",
+    notes: w.querySelector('[data-edu-f="notes"]')?.value ?? "",
+    bullets: [...w.querySelectorAll("[data-edu-bullet]")].map((inp) => inp.value ?? ""),
+  }));
+  const refWraps = [...root.querySelectorAll("[data-ref-row]")].sort(
+    (a, b) => Number(a.getAttribute("data-ref-row")) - Number(b.getAttribute("data-ref-row")),
+  );
+  const references = refWraps.map((w) => ({
+    name: w.querySelector('[data-ref-f="name"]')?.value ?? "",
+    title: w.querySelector('[data-ref-f="title"]')?.value ?? "",
+    phone: w.querySelector('[data-ref-f="phone"]')?.value ?? "",
+    email: w.querySelector('[data-ref-f="email"]')?.value ?? "",
   }));
 
   const fb = defaultResumeDraft();
@@ -209,9 +276,11 @@ export function readEditableMultipageDraft(root, templateId) {
     skills: get('[data-f="skills"]'),
     certifications: get('[data-f="certifications"]'),
     languages: get('[data-f="languages"]'),
+    awards: get('[data-f="awards"]'),
     links: links.length ? links : fb.links,
     experience: experience.length ? experience : fb.experience,
     projects: projects.length ? projects : fb.projects,
     education: education.length ? education : fb.education,
+    references: references.length ? references : fb.references,
   });
 }

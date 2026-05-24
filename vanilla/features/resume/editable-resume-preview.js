@@ -2,6 +2,10 @@ import {
   buildEditableMultipageCv,
   readEditableMultipageDraft,
 } from "./templates/cv-editable-multipage.js";
+import {
+  renderAlvaradoLangPreviewHtml,
+  renderAlvaradoSkillsPreviewHtml,
+} from "./templates/cv-alvarado-blocks.js";
 import { normalizeTemplateId } from "./constants.js";
 import { CV_PH } from "./templates/cv-placeholders.js";
 
@@ -47,7 +51,23 @@ export async function mountResumeEditablePreview(previewEl, ctx) {
 
   paint();
 
-  previewEl.addEventListener("input", persist);
+  previewEl.addEventListener("input", (e) => {
+    const t = e.target;
+    const tpl = previewEl.querySelector("[data-cv-template]")?.getAttribute("data-cv-template");
+    if (tpl !== "6") {
+      persist();
+      return;
+    }
+    if (t.matches?.('[data-f="skills"]')) {
+      const el = previewEl.querySelector("[data-skills-preview]");
+      if (el) el.innerHTML = renderAlvaradoSkillsPreviewHtml(t.value);
+    }
+    if (t.matches?.('[data-f="languages"]')) {
+      const el = previewEl.querySelector("[data-lang-preview]");
+      if (el) el.innerHTML = renderAlvaradoLangPreviewHtml(t.value);
+    }
+    persist();
+  });
   previewEl.addEventListener("change", persist);
 
   previewEl.addEventListener("click", (e) => {
@@ -66,7 +86,10 @@ export async function mountResumeEditablePreview(previewEl, ctx) {
       const i = Number(btn.getAttribute("data-i"));
       draft.projects = (draft.projects || []).filter((_, j) => j !== i);
     } else if (action === "add-edu") {
-      draft.education = [...(draft.education || []), { school: "", degree: "", start: "", end: "" }];
+      draft.education = [...(draft.education || []), { school: "", degree: "", start: "", end: "", notes: "", bullets: ["", ""] }];
+    } else if (action === "remove-edu") {
+      const i = Number(btn.getAttribute("data-i"));
+      draft.education = (draft.education || []).filter((_, j) => j !== i);
     } else if (action === "add-link") {
       draft.links = [...(draft.links || []), { label: "", url: "" }];
     }

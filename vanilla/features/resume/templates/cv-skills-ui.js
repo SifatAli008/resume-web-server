@@ -15,13 +15,13 @@ export function skillBarPct(label, min = 52, max = 94) {
 /** One visual style per template (1–20). */
 export const SKILLS_STYLE_BY_TEMPLATE = [
   "",
-  "pills", // 1 Geneva
-  "pills-dark", // 2 Cascade
-  "grouped", // 3 Zurich
-  "outline", // 4 Oxford
-  "grid", // 5 Kyoto
-  "cards", // 6 Singapore
-  "bars", // 7 Oslo
+  "pills", // 1 Estelle (legacy slot; uses bullet-cols via ui.skillsStyle)
+  "plain-cols", // 2 Gallego
+  "plain-cols", // 3 Mitchell
+  "slate-list", // 4 Sanchez
+  "slate-list", // 5 Sanchez Black
+  "slate-list", // 6 Alvarado
+  "plain-cols", // 7 Schumacher
   "tags-band", // 8 Berlin
   "minimal-row", // 9 Manhattan
   "sky-chips", // 10 Sydney
@@ -341,6 +341,18 @@ function renderMagazineCols(groups) {
     .join("")}</div>`;
 }
 
+function renderPlainCols(flat) {
+  return `<div class="cv-skills-plain-cols grid grid-cols-3 gap-x-4 gap-y-1 text-[13px] leading-snug text-zinc-700">${flat
+    .map((n) => `<div class="break-inside-avoid">${escapeHtml(n)}</div>`)
+    .join("")}</div>`;
+}
+
+function renderBulletCols(flat) {
+  return `<ul class="cv-skills-bullet-cols columns-3 gap-x-6 text-[13px] leading-relaxed text-zinc-700">${flat
+    .map((n) => `<li class="mb-1.5 break-inside-avoid pl-1 list-disc marker:text-zinc-800">${escapeHtml(n)}</li>`)
+    .join("")}</ul>`;
+}
+
 function renderUnderline(flat) {
   return `<div class="flex flex-wrap gap-3">${flat
     .map((n) => {
@@ -405,6 +417,10 @@ export function renderSkillsVisual(skillsText, ui, { dark = false, tplId } = {})
       return renderSwissDense(flat);
     case "magazine-cols":
       return renderMagazineCols(groups);
+    case "plain-cols":
+      return renderPlainCols(flat);
+    case "bullet-cols":
+      return renderBulletCols(flat);
     case "underline":
       return renderUnderline(flat);
     case "pills":
