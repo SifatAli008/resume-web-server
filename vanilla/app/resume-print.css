@@ -645,6 +645,27 @@ html[data-embed-pdf] .cv-photo-editor,
 html[data-embed-thumb] .cv-photo-editor {
   display: none !important;
 }
+html[data-embed-thumb] #resume-print-root .cv-page:nth-child(n + 2) {
+  display: none !important;
+}
+html[data-embed-thumb] #app,
+html[data-embed-thumb] .cv-pdf-embed {
+  overflow: hidden !important;
+  padding: 0 !important;
+}
+html[data-embed-thumb] #resume-print-root {
+  transform-origin: top center;
+  margin-left: auto;
+  margin-right: auto;
+}
+html[data-embed-app] #app {
+  padding: 0 !important;
+  max-width: none;
+}
+html[data-embed-app] #rf-preview-shell {
+  overflow: hidden;
+  max-width: 100%;
+}
 html[data-embed-app] body {
   background: #f4f4f5;
 }
