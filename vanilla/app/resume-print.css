@@ -648,15 +648,26 @@ html[data-embed-thumb] .cv-photo-editor {
 html[data-embed-thumb] #resume-print-root .cv-page:nth-child(n + 2) {
   display: none !important;
 }
+html[data-embed-thumb],
+html[data-embed-thumb] body {
+  height: 100% !important;
+  min-height: 100% !important;
+}
 html[data-embed-thumb] #app,
 html[data-embed-thumb] .cv-pdf-embed {
   overflow: hidden !important;
   padding: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
 }
 html[data-embed-thumb] #resume-print-root {
-  transform-origin: top center;
-  margin-left: auto;
-  margin-right: auto;
+  transform-origin: center center;
+  margin: 0 auto;
 }
 html[data-embed-app] #app {
   padding: 0 !important;
