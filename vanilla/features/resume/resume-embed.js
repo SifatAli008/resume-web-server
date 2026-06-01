@@ -30,7 +30,6 @@ export function applyEmbedHtmlAttrs(mode) {
   if (mode === "thumb") html.dataset.embedThumb = "true";
 }
 
-/** Fixed layout width for mobile WebView embeds. */
 export const EMBED_LAYOUT_WIDTH = 820;
 
 export function lockEmbedViewport(width = EMBED_LAYOUT_WIDTH) {
@@ -40,10 +39,68 @@ export function lockEmbedViewport(width = EMBED_LAYOUT_WIDTH) {
     meta.name = "viewport";
     document.head.appendChild(meta);
   }
-  meta.content = `width=${width}, initial-scale=1, maximum-scale=1, user-scalable=no`;
+  const w = typeof width === "number" ? String(width) : width;
+  meta.content = `width=${w}, initial-scale=1, maximum-scale=1, user-scalable=no`;
 }
 
-/** Thumbnail: first page only, scale to fit inside WebView (contain + padding). */
+const EMBED_STAGE = "cv-embed-fit-stage";
+
+function ensureEmbedStage(content) {
+  const parent = content.parentElement;
+  if (parent?.classList?.contains(EMBED_STAGE)) return parent;
+  const stage = document.createElement("div");
+  stage.className = EMBED_STAGE;
+  parent.insertBefore(stage, content);
+  stage.appendChild(content);
+  return stage;
+}
+
+export function fitEmbedContain(content, { vw, vh, pad = 10 } = {}) {
+  if (!content) return null;
+  vw = vw ?? window.innerWidth ?? document.documentElement.clientWidth ?? 360;
+  vh = vh ?? window.innerHeight ?? document.documentElement.clientHeight ?? 480;
+
+  const naturalW = content.scrollWidth || content.offsetWidth || 1;
+  const naturalH = content.scrollHeight || content.offsetHeight || 1;
+  const scale = Math.min((vw - pad * 2) / naturalW, (vh - pad * 2) / naturalH, 1);
+  if (!Number.isFinite(scale) || scale <= 0) return null;
+
+  const stage = ensureEmbedStage(content);
+  const scaledW = naturalW * scale;
+  const scaledH = naturalH * scale;
+
+  stage.style.cssText = [
+    "box-sizing:border-box",
+    `width:${scaledW}px`,
+    `height:${scaledH}px`,
+    "overflow:hidden",
+    "flex-shrink:0",
+    "margin:auto",
+    "position:relative",
+  ].join(";");
+
+  content.style.boxSizing = "border-box";
+  content.style.width = `${naturalW}px`;
+  content.style.height = `${naturalH}px`;
+  content.style.maxWidth = "none";
+  content.style.transform = `scale(${scale})`;
+  content.style.transformOrigin = "0 0";
+  content.style.margin = "0";
+
+  return { scale, naturalW, naturalH, scaledW, scaledH };
+}
+
+function layoutEmbedHost(el) {
+  if (!el) return;
+  el.style.overflow = "hidden";
+  el.style.width = "100%";
+  el.style.height = "100%";
+  el.style.display = "flex";
+  el.style.alignItems = "center";
+  el.style.justifyContent = "center";
+  el.style.boxSizing = "border-box";
+}
+
 export function fitResumeThumbEmbed(container) {
   const root = container?.querySelector?.("#resume-print-root");
   if (!root) return false;
@@ -52,47 +109,39 @@ export function fitResumeThumbEmbed(container) {
     page.style.setProperty("display", i === 0 ? "block" : "none", "important");
   });
 
-  const page = root.querySelector(".cv-page") || root;
+  const page = root.querySelector(".cv-page");
+  if (page) {
+    page.style.width = "210mm";
+    page.style.minWidth = "210mm";
+    page.style.maxWidth = "210mm";
+    page.style.boxSizing = "border-box";
+  }
+  root.style.width = "210mm";
+  root.style.maxWidth = "210mm";
+  root.style.margin = "0";
+
+  const target = page || root;
   const vw = window.innerWidth || document.documentElement.clientWidth || 360;
   const vh = window.innerHeight || document.documentElement.clientHeight || 480;
-  const pad = 16;
-  const pageW = page.offsetWidth || page.scrollWidth || root.scrollWidth || 1;
-  const pageH = page.offsetHeight || page.scrollHeight || 1;
-  let scale = Math.min((vw - pad * 2) / pageW, (vh - pad * 2) / pageH);
-  if (!Number.isFinite(scale) || scale <= 0) scale = 0.28;
-  scale = Math.min(scale, 1);
+  const fit = fitEmbedContain(target, { vw, vh, pad: 8 });
+  if (!fit) return false;
 
-  root.style.transformOrigin = "center center";
-  root.style.transform = `scale(${scale})`;
-  root.style.margin = "0";
-  root.style.willChange = "transform";
-
-  const scaledW = pageW * scale;
-  const scaledH = pageH * scale;
   const wrap = root.closest(".cv-pdf-embed") || container;
-  if (wrap) {
-    wrap.style.width = `${scaledW}px`;
-    wrap.style.height = `${scaledH}px`;
-    wrap.style.maxWidth = "100%";
-    wrap.style.maxHeight = "100%";
-    wrap.style.flexShrink = "0";
-  }
-
   const app = document.getElementById("app");
-  for (const el of [wrap, app, container].filter(Boolean)) {
-    el.style.overflow = "hidden";
-    if (el !== wrap) {
-      el.style.width = "100%";
-      el.style.height = "100%";
-    }
-    el.style.display = "flex";
-    el.style.alignItems = "center";
-    el.style.justifyContent = "center";
-  }
+  layoutEmbedHost(wrap);
+  layoutEmbedHost(app);
+  if (container && container !== wrap) layoutEmbedHost(container);
 
   if (typeof ResumeMetrics !== "undefined") {
     ResumeMetrics.postMessage(
-      JSON.stringify({ ready: 1, w: vw, h: vh, pageW, pageH, scale }),
+      JSON.stringify({
+        ready: 1,
+        w: vw,
+        h: vh,
+        pageW: fit.naturalW,
+        pageH: fit.naturalH,
+        scale: fit.scale,
+      }),
     );
   }
   return true;
@@ -108,33 +157,25 @@ export function scheduleEmbedFit(fn, { attempts = 32, intervalMs = 140 } = {}) {
   window.addEventListener("resize", fn);
 }
 
-/** Scale CV to fit viewport width and height in Flutter WebView. */
-export function fitResumePreviewToViewport(root) {
-  const article = root?.querySelector?.("#resume-print-root") || root;
+export function fitResumePreviewToViewport(shell) {
+  const article = shell?.querySelector?.("#resume-print-root");
   if (!article) return;
 
   const run = () => {
-    const shell = article.closest("#rf-preview-shell") || article.parentElement;
-    const vw = document.documentElement.clientWidth || window.innerWidth;
-    const vh = window.innerHeight || document.documentElement.clientHeight;
-    const pad = 16;
-    const naturalW = article.scrollWidth || article.offsetWidth || 1;
-    const naturalH = article.scrollHeight || article.offsetHeight || 1;
-    const scale = Math.min(
-      1,
-      (vw - pad) / naturalW,
-      (vh - pad) / naturalH,
-    );
-    if (!Number.isFinite(scale) || scale <= 0) return false;
-
-    article.style.transformOrigin = "top center";
-    article.style.transform = `scale(${scale})`;
-    if (shell) {
-      shell.style.overflow = "hidden";
-      shell.style.height = `${naturalH * scale}px`;
-      shell.style.minHeight = `${naturalH * scale}px`;
+    const preview = shell?.querySelector?.("#rf-preview");
+    if (preview) {
+      preview.style.width = "auto";
+      preview.style.minWidth = "0";
+      preview.style.maxWidth = "none";
+      preview.style.padding = "0";
+      preview.style.margin = "0";
     }
-    return true;
+    layoutEmbedHost(shell);
+    layoutEmbedHost(document.getElementById("app"));
+
+    const vw = document.documentElement.clientWidth || window.innerWidth || 360;
+    const vh = window.innerHeight || document.documentElement.clientHeight || 600;
+    return !!fitEmbedContain(article, { vw, vh, pad: 12 });
   };
 
   run();
@@ -154,7 +195,6 @@ export function markPdfReady() {
   el.textContent = "ready";
 }
 
-/** Flutter / native bridge (optional). */
 export function postResumePdfToApp(base64Pdf, fileName = "resume.pdf") {
   const bridge = globalThis.FluvoResumeApp || globalThis.FluvoInvoiceApp;
   if (bridge?.postMessage) {
