@@ -43,7 +43,7 @@ export function lockEmbedViewport(width = EMBED_LAYOUT_WIDTH) {
   meta.content = `width=${width}, initial-scale=1, maximum-scale=1, user-scalable=no`;
 }
 
-/** Thumbnail: first page only, scale to fill WebView viewport. */
+/** Thumbnail: first page only, scale to fit inside WebView (contain + padding). */
 export function fitResumeThumbEmbed(container) {
   const root = container?.querySelector?.("#resume-print-root");
   if (!root) return false;
@@ -55,22 +55,36 @@ export function fitResumeThumbEmbed(container) {
   const page = root.querySelector(".cv-page") || root;
   const vw = window.innerWidth || document.documentElement.clientWidth || 360;
   const vh = window.innerHeight || document.documentElement.clientHeight || 480;
-  const rect = page.getBoundingClientRect();
-  const pageW = rect.width || page.offsetWidth || root.scrollWidth || 1;
-  const pageH = rect.height || page.offsetHeight || 1;
-  let scale = Math.min((vw - 6) / pageW, (vh - 6) / pageH);
-  if (!Number.isFinite(scale) || scale <= 0) scale = 0.35;
+  const pad = 16;
+  const pageW = page.offsetWidth || page.scrollWidth || root.scrollWidth || 1;
+  const pageH = page.offsetHeight || page.scrollHeight || 1;
+  let scale = Math.min((vw - pad * 2) / pageW, (vh - pad * 2) / pageH);
+  if (!Number.isFinite(scale) || scale <= 0) scale = 0.28;
+  scale = Math.min(scale, 1);
 
   root.style.transformOrigin = "center center";
   root.style.transform = `scale(${scale})`;
   root.style.margin = "0";
+  root.style.willChange = "transform";
 
+  const scaledW = pageW * scale;
+  const scaledH = pageH * scale;
   const wrap = root.closest(".cv-pdf-embed") || container;
+  if (wrap) {
+    wrap.style.width = `${scaledW}px`;
+    wrap.style.height = `${scaledH}px`;
+    wrap.style.maxWidth = "100%";
+    wrap.style.maxHeight = "100%";
+    wrap.style.flexShrink = "0";
+  }
+
   const app = document.getElementById("app");
   for (const el of [wrap, app, container].filter(Boolean)) {
     el.style.overflow = "hidden";
-    el.style.width = "100%";
-    el.style.height = "100%";
+    if (el !== wrap) {
+      el.style.width = "100%";
+      el.style.height = "100%";
+    }
     el.style.display = "flex";
     el.style.alignItems = "center";
     el.style.justifyContent = "center";
@@ -94,7 +108,7 @@ export function scheduleEmbedFit(fn, { attempts = 32, intervalMs = 140 } = {}) {
   window.addEventListener("resize", fn);
 }
 
-/** Scale CV to viewport width in Flutter WebView. */
+/** Scale CV to fit viewport width and height in Flutter WebView. */
 export function fitResumePreviewToViewport(root) {
   const article = root?.querySelector?.("#resume-print-root") || root;
   if (!article) return;
@@ -102,17 +116,25 @@ export function fitResumePreviewToViewport(root) {
   const run = () => {
     const shell = article.closest("#rf-preview-shell") || article.parentElement;
     const vw = document.documentElement.clientWidth || window.innerWidth;
-    const natural = article.scrollWidth || article.offsetWidth;
-    if (!natural || natural <= vw) {
-      article.style.transform = "";
-      article.style.transformOrigin = "";
-      if (shell) shell.style.height = "";
-      return;
-    }
-    const scale = Math.min(1, (vw - 16) / natural);
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    const pad = 16;
+    const naturalW = article.scrollWidth || article.offsetWidth || 1;
+    const naturalH = article.scrollHeight || article.offsetHeight || 1;
+    const scale = Math.min(
+      1,
+      (vw - pad) / naturalW,
+      (vh - pad) / naturalH,
+    );
+    if (!Number.isFinite(scale) || scale <= 0) return false;
+
     article.style.transformOrigin = "top center";
     article.style.transform = `scale(${scale})`;
-    if (shell) shell.style.height = `${article.offsetHeight * scale}px`;
+    if (shell) {
+      shell.style.overflow = "hidden";
+      shell.style.height = `${naturalH * scale}px`;
+      shell.style.minHeight = `${naturalH * scale}px`;
+    }
+    return true;
   };
 
   run();
