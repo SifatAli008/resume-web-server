@@ -58,7 +58,13 @@ export async function mountResumePdfEmbed(app, draft) {
 }
 
 export function mountResumeThumbEmbed(app, draft) {
-  lockEmbedViewport();
+  let meta = document.querySelector('meta[name="viewport"]');
+  if (!meta) {
+    meta = document.createElement("meta");
+    meta.name = "viewport";
+    document.head.appendChild(meta);
+  }
+  meta.content = "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no";
   document.body.style.overflow = "hidden";
   document.documentElement.style.overflow = "hidden";
   mountResumePdfEmbed(app, draft);

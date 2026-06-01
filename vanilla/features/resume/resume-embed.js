@@ -43,8 +43,8 @@ export function lockEmbedViewport(width = EMBED_LAYOUT_WIDTH) {
   meta.content = `width=${width}, initial-scale=1, maximum-scale=1, user-scalable=no`;
 }
 
-/** Thumbnail: first page only, scale to layout width, notify Flutter via ResumeMetrics. */
-export function fitResumeThumbEmbed(container, layoutWidth = EMBED_LAYOUT_WIDTH) {
+/** Thumbnail: first page only, scale to fill WebView viewport. */
+export function fitResumeThumbEmbed(container) {
   const root = container?.querySelector?.("#resume-print-root");
   if (!root) return false;
 
@@ -53,25 +53,32 @@ export function fitResumeThumbEmbed(container, layoutWidth = EMBED_LAYOUT_WIDTH)
   });
 
   const page = root.querySelector(".cv-page") || root;
-  const pageW = page.offsetWidth || root.scrollWidth || layoutWidth;
-  const pageH = page.offsetHeight || 1100;
-  const scale = Math.min(1, layoutWidth / Math.max(pageW, 1));
+  const vw = window.innerWidth || document.documentElement.clientWidth || 360;
+  const vh = window.innerHeight || document.documentElement.clientHeight || 480;
+  const rect = page.getBoundingClientRect();
+  const pageW = rect.width || page.offsetWidth || root.scrollWidth || 1;
+  const pageH = rect.height || page.offsetHeight || 1;
+  let scale = Math.min((vw - 6) / pageW, (vh - 6) / pageH);
+  if (!Number.isFinite(scale) || scale <= 0) scale = 0.35;
 
-  root.style.transformOrigin = "top center";
+  root.style.transformOrigin = "center center";
   root.style.transform = `scale(${scale})`;
-  root.style.margin = "0 auto";
+  root.style.margin = "0";
 
   const wrap = root.closest(".cv-pdf-embed") || container;
-  if (wrap) {
-    wrap.style.overflow = "hidden";
-    wrap.style.width = `${layoutWidth}px`;
-    wrap.style.margin = "0 auto";
+  const app = document.getElementById("app");
+  for (const el of [wrap, app, container].filter(Boolean)) {
+    el.style.overflow = "hidden";
+    el.style.width = "100%";
+    el.style.height = "100%";
+    el.style.display = "flex";
+    el.style.alignItems = "center";
+    el.style.justifyContent = "center";
   }
 
-  const scaledH = pageH * scale;
   if (typeof ResumeMetrics !== "undefined") {
     ResumeMetrics.postMessage(
-      JSON.stringify({ w: layoutWidth, h: scaledH, pageW, pageH }),
+      JSON.stringify({ ready: 1, w: vw, h: vh, pageW, pageH, scale }),
     );
   }
   return true;
