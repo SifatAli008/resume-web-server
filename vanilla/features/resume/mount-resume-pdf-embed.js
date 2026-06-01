@@ -1,6 +1,11 @@
 import { normalizeResumeDraft } from "./draft.js";
 import { normalizeTemplateId } from "./constants.js";
-import { markPdfReady } from "./resume-embed.js";
+import {
+  fitResumeThumbEmbed,
+  lockEmbedViewport,
+  markPdfReady,
+  scheduleEmbedFit,
+} from "./resume-embed.js";
 import { buildEditableMultipageCv } from "./templates/cv-editable-multipage.js";
 import { CV_PH } from "./templates/cv-placeholders.js";
 
@@ -53,5 +58,9 @@ export async function mountResumePdfEmbed(app, draft) {
 }
 
 export function mountResumeThumbEmbed(app, draft) {
-  return mountResumePdfEmbed(app, draft);
+  lockEmbedViewport();
+  document.body.style.overflow = "hidden";
+  document.documentElement.style.overflow = "hidden";
+  mountResumePdfEmbed(app, draft);
+  scheduleEmbedFit(() => fitResumeThumbEmbed(app));
 }

@@ -1,12 +1,21 @@
 import { mountResumeEditablePreview } from "./editable-resume-preview.js";
 import { encodeResumeDraftBase64Url } from "./draft-url.js";
 import { applyTemplatePhotoDefaults } from "./templates/cv-defaults.js";
-import { fitResumePreviewToViewport, postResumePdfToApp } from "./resume-embed.js";
+import {
+  fitResumePreviewToViewport,
+  lockEmbedViewport,
+  postResumePdfToApp,
+  scheduleEmbedFit,
+} from "./resume-embed.js";
 import { normalizeResumeDraft } from "./draft.js";
 
 /** Flutter / mobile WebView: editable CV, viewport fit, optional PDF postMessage. */
 export function mountResumeAppEmbed(app, initialDraft) {
   let draft = applyTemplatePhotoDefaults(normalizeResumeDraft(initialDraft), initialDraft.templateId, "load");
+
+  lockEmbedViewport();
+  document.body.style.overflow = "hidden";
+  document.documentElement.style.overflow = "hidden";
 
   app.replaceChildren();
   const shell = document.createElement("div");
@@ -38,6 +47,7 @@ export function mountResumeAppEmbed(app, initialDraft) {
   };
 
   remountAndFit();
+  scheduleEmbedFit(() => fitResumePreviewToViewport(shell));
 
   window.addEventListener("resumeData", (e) => {
     const next = e?.detail;

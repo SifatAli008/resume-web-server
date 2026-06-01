@@ -30,6 +30,63 @@ export function applyEmbedHtmlAttrs(mode) {
   if (mode === "thumb") html.dataset.embedThumb = "true";
 }
 
+/** Fixed layout width for mobile WebView embeds. */
+export const EMBED_LAYOUT_WIDTH = 820;
+
+export function lockEmbedViewport(width = EMBED_LAYOUT_WIDTH) {
+  let meta = document.querySelector('meta[name="viewport"]');
+  if (!meta) {
+    meta = document.createElement("meta");
+    meta.name = "viewport";
+    document.head.appendChild(meta);
+  }
+  meta.content = `width=${width}, initial-scale=1, maximum-scale=1, user-scalable=no`;
+}
+
+/** Thumbnail: first page only, scale to layout width, notify Flutter via ResumeMetrics. */
+export function fitResumeThumbEmbed(container, layoutWidth = EMBED_LAYOUT_WIDTH) {
+  const root = container?.querySelector?.("#resume-print-root");
+  if (!root) return false;
+
+  root.querySelectorAll(".cv-page").forEach((page, i) => {
+    page.style.setProperty("display", i === 0 ? "block" : "none", "important");
+  });
+
+  const page = root.querySelector(".cv-page") || root;
+  const pageW = page.offsetWidth || root.scrollWidth || layoutWidth;
+  const pageH = page.offsetHeight || 1100;
+  const scale = Math.min(1, layoutWidth / Math.max(pageW, 1));
+
+  root.style.transformOrigin = "top center";
+  root.style.transform = `scale(${scale})`;
+  root.style.margin = "0 auto";
+
+  const wrap = root.closest(".cv-pdf-embed") || container;
+  if (wrap) {
+    wrap.style.overflow = "hidden";
+    wrap.style.width = `${layoutWidth}px`;
+    wrap.style.margin = "0 auto";
+  }
+
+  const scaledH = pageH * scale;
+  if (typeof ResumeMetrics !== "undefined") {
+    ResumeMetrics.postMessage(
+      JSON.stringify({ w: layoutWidth, h: scaledH, pageW, pageH }),
+    );
+  }
+  return true;
+}
+
+export function scheduleEmbedFit(fn, { attempts = 32, intervalMs = 140 } = {}) {
+  let n = 0;
+  const timer = setInterval(() => {
+    n += 1;
+    if (fn() || n >= attempts) clearInterval(timer);
+  }, intervalMs);
+  if (document.fonts?.ready) document.fonts.ready.then(fn);
+  window.addEventListener("resize", fn);
+}
+
 /** Scale CV to viewport width in Flutter WebView. */
 export function fitResumePreviewToViewport(root) {
   const article = root?.querySelector?.("#resume-print-root") || root;
