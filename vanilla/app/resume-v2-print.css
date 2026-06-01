@@ -1435,3 +1435,8 @@
   }
 }
 
+html[data-embed-thumb] #resume-print-root.cv-v2 .cv-page {
+  min-height: auto !important;
+  height: auto !important;
+}
+

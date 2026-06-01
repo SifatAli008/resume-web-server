@@ -661,7 +661,7 @@ html[data-embed-thumb] .cv-pdf-embed {
   height: 100% !important;
   min-height: 100% !important;
   display: flex !important;
-  align-items: center !important;
+  align-items: flex-start !important;
   justify-content: center !important;
   box-sizing: border-box !important;
 }
@@ -673,6 +673,8 @@ html[data-embed-thumb] #resume-print-root {
 html[data-embed-thumb] #resume-print-root .cv-page {
   width: 210mm;
   max-width: 210mm;
+  min-height: auto !important;
+  height: auto !important;
   box-sizing: border-box;
 }
 html[data-embed-thumb] .cv-embed-fit-stage {

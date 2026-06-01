@@ -55,14 +55,17 @@ function ensureEmbedStage(content) {
   return stage;
 }
 
-export function fitEmbedContain(content, { vw, vh, pad = 10 } = {}) {
+export const THUMB_EMBED_SCALE_BOOST = 1.24;
+
+export function fitEmbedContain(content, { vw, vh, pad = 10, scaleBoost = 1 } = {}) {
   if (!content) return null;
   vw = vw ?? window.innerWidth ?? document.documentElement.clientWidth ?? 360;
   vh = vh ?? window.innerHeight ?? document.documentElement.clientHeight ?? 480;
 
   const naturalW = content.scrollWidth || content.offsetWidth || 1;
   const naturalH = content.scrollHeight || content.offsetHeight || 1;
-  const scale = Math.min((vw - pad * 2) / naturalW, (vh - pad * 2) / naturalH, 1);
+  let scale = Math.min((vw - pad * 2) / naturalW, (vh - pad * 2) / naturalH, 1);
+  if (scaleBoost > 1) scale = Math.min(scale * scaleBoost, 1);
   if (!Number.isFinite(scale) || scale <= 0) return null;
 
   const stage = ensureEmbedStage(content);
@@ -101,6 +104,54 @@ function layoutEmbedHost(el) {
   el.style.boxSizing = "border-box";
 }
 
+function layoutThumbHost(el) {
+  if (!el) return;
+  el.style.overflow = "hidden";
+  el.style.width = "100%";
+  el.style.height = "100%";
+  el.style.display = "flex";
+  el.style.alignItems = "flex-start";
+  el.style.justifyContent = "center";
+  el.style.boxSizing = "border-box";
+}
+
+export function fitEmbedThumb(content, { vw, vh, pad = 4, scaleBoost = THUMB_EMBED_SCALE_BOOST } = {}) {
+  if (!content) return null;
+  vw = vw ?? window.innerWidth ?? document.documentElement.clientWidth ?? 360;
+  vh = vh ?? window.innerHeight ?? document.documentElement.clientHeight ?? 480;
+
+  const naturalW = content.scrollWidth || content.offsetWidth || 1;
+  const naturalH = content.scrollHeight || content.offsetHeight || 1;
+  const maxScaleW = (vw - pad * 2) / naturalW;
+  const maxScaleH = (vh - pad * 2) / naturalH;
+  let scale = Math.min(maxScaleW, maxScaleH) * scaleBoost;
+  if (!Number.isFinite(scale) || scale <= 0) return null;
+
+  const stage = ensureEmbedStage(content);
+  const scaledW = naturalW * scale;
+  const scaledH = naturalH * scale;
+
+  stage.style.cssText = [
+    "box-sizing:border-box",
+    `width:${scaledW}px`,
+    `height:${scaledH}px`,
+    "overflow:hidden",
+    "flex-shrink:0",
+    "margin:0 auto",
+    "position:relative",
+  ].join(";");
+
+  content.style.boxSizing = "border-box";
+  content.style.width = `${naturalW}px`;
+  content.style.height = `${naturalH}px`;
+  content.style.maxWidth = "none";
+  content.style.transform = `scale(${scale})`;
+  content.style.transformOrigin = "top center";
+  content.style.margin = "0";
+
+  return { scale, naturalW, naturalH, scaledW, scaledH };
+}
+
 export function fitResumeThumbEmbed(container) {
   const root = container?.querySelector?.("#resume-print-root");
   if (!root) return false;
@@ -114,6 +165,8 @@ export function fitResumeThumbEmbed(container) {
     page.style.width = "210mm";
     page.style.minWidth = "210mm";
     page.style.maxWidth = "210mm";
+    page.style.minHeight = "auto";
+    page.style.height = "auto";
     page.style.boxSizing = "border-box";
   }
   root.style.width = "210mm";
@@ -123,14 +176,14 @@ export function fitResumeThumbEmbed(container) {
   const target = page || root;
   const vw = window.innerWidth || document.documentElement.clientWidth || 360;
   const vh = window.innerHeight || document.documentElement.clientHeight || 480;
-  const fit = fitEmbedContain(target, { vw, vh, pad: 8 });
+  const fit = fitEmbedThumb(target, { vw, vh });
   if (!fit) return false;
 
   const wrap = root.closest(".cv-pdf-embed") || container;
   const app = document.getElementById("app");
-  layoutEmbedHost(wrap);
-  layoutEmbedHost(app);
-  if (container && container !== wrap) layoutEmbedHost(container);
+  layoutThumbHost(wrap);
+  layoutThumbHost(app);
+  if (container && container !== wrap) layoutThumbHost(container);
 
   if (typeof ResumeMetrics !== "undefined") {
     ResumeMetrics.postMessage(
