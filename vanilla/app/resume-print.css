@@ -666,19 +666,62 @@ html[data-embed-thumb] .cv-pdf-embed {
   box-sizing: border-box !important;
 }
 html[data-embed-thumb] #resume-print-root {
-  transform-origin: center center;
-  margin: 0 auto;
+  width: 210mm;
+  max-width: 210mm;
+  margin: 0;
+}
+html[data-embed-thumb] #resume-print-root .cv-page {
+  width: 210mm;
+  max-width: 210mm;
+  box-sizing: border-box;
+}
+html[data-embed-thumb] .cv-embed-fit-stage {
+  flex-shrink: 0;
+  margin: auto;
 }
 html[data-embed-app] #app {
   padding: 0 !important;
   max-width: none;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
 }
 html[data-embed-app] #rf-preview-shell {
-  overflow: hidden;
-  max-width: 100%;
+  overflow: hidden !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-width: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+}
+html[data-embed-app] #rf-preview {
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+html[data-embed-app] .cv-embed-fit-stage {
+  flex-shrink: 0;
+  margin: auto;
 }
 html[data-embed-app] body {
   background: #f4f4f5;
+  height: 100% !important;
+  min-height: 100% !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+html[data-embed-app] {
+  height: 100% !important;
 }
 html[data-embed-app] .print\:hidden {
   display: none !important;

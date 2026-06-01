@@ -13,14 +13,31 @@ import { normalizeResumeDraft } from "./draft.js";
 export function mountResumeAppEmbed(app, initialDraft) {
   let draft = applyTemplatePhotoDefaults(normalizeResumeDraft(initialDraft), initialDraft.templateId, "load");
 
-  lockEmbedViewport();
+  lockEmbedViewport("device-width");
   document.body.style.overflow = "hidden";
   document.documentElement.style.overflow = "hidden";
+  document.body.style.margin = "0";
+  document.body.style.height = "100%";
+  document.documentElement.style.height = "100%";
 
   app.replaceChildren();
+  app.style.width = "100%";
+  app.style.height = "100%";
+  app.style.padding = "0";
+  app.style.margin = "0";
+  app.style.overflow = "hidden";
+  app.style.display = "flex";
+  app.style.alignItems = "center";
+  app.style.justifyContent = "center";
+
   const shell = document.createElement("div");
   shell.id = "rf-preview-shell";
-  shell.className = "mx-auto overflow-x-hidden bg-white";
+  shell.className = "mx-auto overflow-hidden bg-transparent";
+  shell.style.width = "100%";
+  shell.style.height = "100%";
+  shell.style.display = "flex";
+  shell.style.alignItems = "center";
+  shell.style.justifyContent = "center";
   shell.innerHTML = `<div id="rf-preview"></div>`;
   app.appendChild(shell);
 
